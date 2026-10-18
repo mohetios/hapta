@@ -10,6 +10,25 @@ The goal: first-class **Jalali (Solar Hijri) calendar**, proper **RTL / Persian*
 >
 > نام «هَپتا» برگرفته از ریشهٔ ایرانی باستانِ *haptá* به معنی «هفت» است، نه خود «هفته».
 
+![Hapta preview](docs/screenshot.webp)
+
+## Features
+
+Inherited from WeekToDo:
+
+- Cross platform (Linux, Windows, macOS, web)
+- Light/dark mode
+- Custom to-do lists
+- Drag and drop
+- Multi-language
+- Sub-tasks
+- Markdown support
+- Customizable interface
+- Local storage, no account needed
+- Task colors and times
+- Recurring tasks
+- Notifications and reminders
+
 ## Status
 
 Early stage. Right now the code is upstream WeekToDo with cleaned-up infrastructure (CI builds for Linux and Windows).
