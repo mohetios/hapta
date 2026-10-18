@@ -45,8 +45,16 @@ Persian / Jalali work starts once this baseline is stable.
 
 ## Download
 
-Builds from `main` are attached to each [Actions run](https://github.com/mohetios/hapta/actions) as artifacts.
-Tagged versions (`v*`) are published on the [Releases](https://github.com/mohetios/hapta/releases) page.
+Get Linux (AppImage, deb) and Windows (installer) builds from the [Releases](https://github.com/mohetios/hapta/releases) page:
+
+- **Stable**: versioned releases (`v*`).
+- **Nightly**: pre-release rebuilt on every push to `main`. Latest code, may be broken.
+
+## Releasing
+
+1. Bump `version` in `package.json` and commit.
+2. Tag and push: `git tag v2.3.0 && git push origin v2.3.0`
+3. CI builds Linux and Windows and publishes the release with generated notes.
 
 ## Build from source
 
