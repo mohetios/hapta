@@ -1,0 +1,26 @@
+pkgbase = hapta-bin
+	pkgdesc = Minimalist weekly planner with Jalali (Persian) and other calendar systems and RTL support (prebuilt)
+	pkgver = 2.2.0.r202610181612
+	pkgrel = 1
+	url = https://github.com/mohetios/hapta
+	arch = x86_64
+	license = GPL-3.0-only
+	depends = cairo
+	depends = dbus
+	depends = gcc-libs
+	depends = gdk-pixbuf2
+	depends = glib2
+	depends = glibc
+	depends = gtk3
+	depends = hicolor-icon-theme
+	depends = libayatana-appindicator
+	depends = libsoup3
+	depends = webkit2gtk-4.1
+	provides = hapta
+	conflicts = hapta
+	options = !strip
+	options = !debug
+	source = hapta_amd64.deb::https://github.com/mohetios/hapta/releases/latest/download/hapta_amd64.deb
+	sha256sums = SKIP
+
+pkgname = hapta-bin

@@ -72,6 +72,9 @@ jobs:
           path: dist
           merge-multiple: true
 
+      # Stable name so releases/latest/download/hapta_amd64.deb always works (AUR hapta-bin)
+      - run: cp dist/deb/*.deb dist/deb/hapta_amd64.deb
+
       - if: startsWith(github.ref, 'refs/tags/v')
         run: gh release create "$GITHUB_REF_NAME" dist/*/* --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
 

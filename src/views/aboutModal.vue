@@ -10,17 +10,17 @@
           <div class="d-flex flex-column" style="text-align: center; margin-top: 10px">
             <img
               class="logo align-self-center"
-              src="/img/weektodo-isologo-color.svg"
+              src="/img/mark-color.png"
               alt="Hapta"
               title="Hapta Logo"
-              width="256"
+              width="200"
             />
             <img
               class="logo logo-white align-self-center"
-              src="/img/weektodo-isologo-white.svg"
+              src="/img/mark-white.png"
               alt="Hapta"
               title="Hapta Logo"
-              width="256"
+              width="200"
             />
             <!-- <h5 style="margin-top: 15px; margin-bottom: 2px;">Hapta</h5> -->
             <span class="mt-3" style="font-size: 0.75rem"

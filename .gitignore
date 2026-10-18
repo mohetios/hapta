@@ -1,14 +1,14 @@
 .DS_Store
 node_modules
 /dist
+*.local
 
-# local env files
-.env.local
-.env.*.local
+# env files
+.env
+.env.*
 
 # Log files
 npm-debug.log*
-pnpm-debug.log*
 pnpm-debug.log*
 
 # Editor directories and files
@@ -19,4 +19,8 @@ pnpm-debug.log*
 /src-tauri/target
 /src-tauri/gen/schemas
 
-.env
+# makepkg output (packaging/aur)
+/packaging/aur/*/src/
+/packaging/aur/*/pkg/
+/packaging/aur/*/*.deb
+/packaging/aur/*/*.pkg.tar.*

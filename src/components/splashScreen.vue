@@ -11,14 +11,14 @@
           <img
             v-if="darkTheme"
             class="logo"
-            src="/img/weektodo-isologo-white.svg"
+            src="/img/mark-white.png"
             alt="Hapta Logo"
             style="display: inline"
           />
           <img
             v-else
             class="logo"
-            src="/img/weektodo-isologo-color.svg"
+            src="/img/mark-color.png"
             alt="Hapta Logo"
             style="display: inline"
           />
@@ -151,7 +151,7 @@ export default {
 
 .logo {
   margin-inline-end: 15px;
-  width: 25rem;
+  width: 14rem;
 }
 
 .splash-screen h1 {

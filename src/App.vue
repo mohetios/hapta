@@ -101,8 +101,8 @@
         </div>
 
         <div v-show="!showCustomList && !showCalendar" style="margin: auto">
-          <img v-if="darkTheme" src="/img/WeekToDoDarkLogo.webp" />
-          <img v-else src="/img/WeekToDoLightLogo.webp" />
+          <img v-if="darkTheme" src="/img/mark-white.png" width="320" alt="Hapta" />
+          <img v-else src="/img/mark-color.png" width="320" alt="Hapta" />
         </div>
       </div>
 

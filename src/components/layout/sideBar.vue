@@ -2,9 +2,8 @@
   <div class="side-bar">
     <img
       class="logo"
-      src="/img/logo-color.svg"
+      src="/img/mark-color.png"
       width="42"
-      height="42"
       alt="Hapta Logo"
       data-bs-toggle="modal"
       data-bs-target="#aboutModal"
@@ -12,9 +11,8 @@
     />
     <img
       class="logo logo-white"
-      src="/img/logo-white.svg"
+      src="/img/mark-white.png"
       width="42"
-      height="42"
       alt="Hapta Logo"
       data-bs-toggle="modal"
       data-bs-target="#aboutModal"
