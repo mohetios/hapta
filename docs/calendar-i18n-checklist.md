@@ -82,7 +82,8 @@ calendar, and the layout follows the language direction (LTR/RTL).
 - [x] `RecurrentEventsModal` summary text formatted in the active calendar
 
 ## Phase 6b — Fonts
-- [x] Vazirmatn (variable, OFL) for RTL via `--bs-body-font-family`; only downloaded
+- [x] Vazirmatn variable font bundled in `src/assets/fonts` (OFL) for RTL via
+      `--bs-body-font-family`; only downloaded
       when Arabic-script glyphs render
 
 ## Phase 7 — Verification

@@ -389,6 +389,15 @@ i {
 
 /*-------------RTL----------------*/
 
+/* Vazirmatn v33.0.3 variable (SIL OFL, see fonts/Vazirmatn-OFL.txt); only fetched when Arabic-script glyphs render */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/Vazirmatn-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Vazirmatn for Arabic-script UI; Hebrew glyphs fall through to the system font */
 [dir="rtl"] {
   --bs-body-font-family: Vazirmatn, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", sans-serif;

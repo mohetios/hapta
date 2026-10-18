@@ -15,7 +15,6 @@ import "bootstrap";
 // Bootstrap CSS (LTR/RTL) is loaded by helpers/languageHelper.js
 
 import "bootstrap-icons/font/bootstrap-icons.css";
-import "vazirmatn/Vazirmatn-Variable-font-face.css";
 
 import "./assets/style/globalVars.scss";
 import "./assets/style/main.scss";
