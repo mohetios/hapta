@@ -27,14 +27,14 @@ If you want to understand how Hapta works or want to debug an issue, you'll want
 
 ## Installing Prerequisites
 
-You'll need git, a recent version of [Node.JS](https://nodejs.org/en/) (currently v16.X is recommended), [Yarn](https://yarnpkg.com/) and [Electron](https://www.electronjs.org/).
+You'll need git, a recent version of [Node.JS](https://nodejs.org/en/) (currently v16.X is recommended), [Yarn](https://yarnpkg.com/), and [Rust with the Tauri prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 ```
 git clone https://github.com/mohetios/hapta
 cd hapta
 yarn install
 yarn run serve // to run web version
-yarn run electron:serve // to run native version
+yarn run tauri:serve // to run native version
 ```
 
 # Where to Contribute

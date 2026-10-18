@@ -2,7 +2,7 @@ import storageRepository from "../repositories/storageRepository";
 import dbRepository from "../repositories/dbRepository";
 import { Toast, Modal } from "bootstrap";
 import migrations from "../migrations/migrations";
-import isElectron from "is-electron";
+import desktop from "./desktop";
 
 export default {
   export() {
@@ -45,9 +45,8 @@ export default {
     };
   },
   clear() {
-    if (isElectron()) {
-      const { ipcRenderer } = require("electron");
-      ipcRenderer.send("clear-config");
+    if (desktop.isDesktop()) {
+      desktop.clearConfig();
     }
 
     storageRepository.clean();

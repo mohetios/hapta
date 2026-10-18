@@ -56,17 +56,19 @@ Get Linux (AppImage, deb) and Windows (installer) builds from the [Releases](htt
 2. Tag and push: `git tag v2.3.0 && git push origin v2.3.0`
 3. CI builds Linux and Windows and publishes the release with generated notes.
 
+Every push to `main` also publishes its own release, tagged `v<version>-build.<run>`.
+
 ## Build from source
 
-Requires Node.js 16 and Yarn (webpack 4 doesn't work on Node 17+).
+Requires Node.js 16 and Yarn (webpack 4 doesn't work on Node 17+), plus Rust and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for the desktop app.
 
 ```bash
 git clone https://github.com/mohetios/hapta
 cd hapta
 yarn install
 yarn serve            # web version
-yarn electron:serve   # desktop version
-yarn electron:build   # package the desktop app
+yarn tauri:serve      # desktop version
+yarn tauri:build      # package the desktop app
 ```
 
 ## Credits

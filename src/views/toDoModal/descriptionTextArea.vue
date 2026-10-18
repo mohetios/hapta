@@ -16,6 +16,7 @@
 <script>
 import MarkdownIt from 'markdown-it';
 import markdownTargetBlankLinks from '../../helpers/markdownTargetBlankLinks';
+import desktop from '../../helpers/desktop';
 
 
 export default {
@@ -57,7 +58,7 @@ export default {
             return this.md.render(this.desc);
         },
         goToMarkDown: function () {
-            window.open("https://commonmark.org/help/", "_blank");
+            desktop.openExternal("https://commonmark.org/help/");
         },
     },
     watch: {

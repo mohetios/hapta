@@ -52,13 +52,13 @@
 
 <script>
 import configRepository from "../../repositories/configRepository";
+import desktop from "../../helpers/desktop";
 
 export default {
   name: "languageView",
   data() {
     return {
       language: this.$store.getters.config.language,
-      isElectron: require("is-electron"),
     };
   },
   methods: {
@@ -68,9 +68,8 @@ export default {
         configRepository.update(this.$store.getters.config);
         this.$i18n.locale = this.language;
 
-        if (this.isElectron()) {
-          const { ipcRenderer } = require("electron");
-          ipcRenderer.send("set-tray-context-menu-label", { open: this.$t("ui.open"), quit: this.$t("ui.quit") });
+        if (desktop.isDesktop()) {
+          desktop.setTrayContextMenuLabel({ open: this.$t("ui.open"), quit: this.$t("ui.quit") });
         }
       });
     },

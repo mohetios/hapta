@@ -90,6 +90,7 @@ import customToDoListIdsRepository from "../../repositories/customToDoListIdsRep
 import toDoListRepository from "../../repositories/toDoListRepository";
 import Datepicker from "vue3-datepicker";
 import languageHelper from "../../helpers/languageHelper.js";
+import desktop from "../../helpers/desktop";
 
 export default {
   name: "sideBar",
@@ -146,7 +147,7 @@ export default {
       document.getElementById("config-general-tab").click();
     },
     openDonateModal: function () {
-      window.open("https://weektodo.me/support-us", "_blank");
+      desktop.openExternal("https://weektodo.me/support-us");
     },
     print: function () {
       window.print();

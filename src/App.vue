@@ -168,7 +168,7 @@ import tipsModal from "./views/tipsModal";
 import { Modal, Toast } from "bootstrap";
 import migrations from "./migrations/migrations";
 import version_json from "../public/version.json";
-import isElectron from "is-electron";
+import desktop from "./helpers/desktop";
 import taskHelper from "./helpers/tasksHelper";
 import notifications from "./helpers/notifications";
 import clearDataModal from "./components/comfirmModals/clearDataModal.vue";
@@ -208,7 +208,6 @@ export default {
       selected_date: null,
       cTodoList: this.$store.getters.cTodoListIds,
       calendarHeight: "calc(50% - 50px)",
-      ipcRenderer: null,
       initialLoadCompleted: false,
       initialListToLoad: 0,
       initialListLoaded: 0,
@@ -251,18 +250,16 @@ export default {
       }
     };
 
-    if (isElectron()) {
-      const { ipcRenderer } = require("electron");
-      this.ipcRenderer = ipcRenderer;
-      if (this.$store.getters.config.firstTimeOpen) this.ipcRenderer.send("show-current-window");
-      this.ipcRenderer.send("match-open-on-startup", this.$store.getters.config.openOnStartup);
+    if (desktop.isDesktop()) {
+      if (this.$store.getters.config.firstTimeOpen) desktop.showCurrentWindow();
+      desktop.matchOpenOnStartup(this.$store.getters.config.openOnStartup);
     }
 
     if (this.$store.getters.config.importing) {
       this.$store.commit("updateConfig", { val: false, key: "importing" });
       configRepository.update(this.$store.getters.config);
-      if (isElectron()) {
-        this.syncElectronConfig();
+      if (desktop.isDesktop()) {
+        this.syncDesktopConfig();
       }
     }
 
@@ -325,15 +322,11 @@ export default {
           .focus();
       });
     },
-    isElectron: function () {
-      let isElectron = require("is-electron");
-      return isElectron();
-    },
     hideSplash: function () {
-      if (this.isElectron()) {
-        if (this.ipcRenderer.sendSync("is-windows-visible")) {
-          this.$refs.splash.hideSplash();
-        }
+      if (desktop.isDesktop()) {
+        desktop.isWindowVisible().then((visible) => {
+          if (visible) this.$refs.splash.hideSplash();
+        });
       } else {
         this.$refs.splash.hideSplash();
       }
@@ -398,11 +391,11 @@ export default {
               this.refreshTodayNotifications();
               this.$store.commit("updateConfig", { val: moment().format("YYYYMMDD"), key: "lastDayOpened" });
               configRepository.update(this.$store.getters.config);
-              if (isElectron()) this.showInitialNotification();
+              if (desktop.isDesktop()) this.showInitialNotification();
             });
           } else {
             this.refreshTodayNotifications();
-            if (isElectron()) this.showInitialNotification();
+            if (desktop.isDesktop()) this.showInitialNotification();
             this.$store.commit("updateConfig", { val: moment().format("YYYYMMDD"), key: "lastDayOpened" });
             configRepository.update(this.$store.getters.config);
           }
@@ -418,7 +411,7 @@ export default {
             icon: "/favicon.ico",
             silent: true,
           }).onclick = () => {
-            this.ipcRenderer.send("show-current-window");
+            desktop.showCurrentWindow();
             setTimeout(() => {
               if (document.getElementById("splashScreen")) {
                 document.getElementById("splashScreen").classList.add("hiddenSplashScreen");
@@ -454,8 +447,10 @@ export default {
 
       setTimeout(
         function () {
-          if (isElectron() && !this.ipcRenderer.sendSync("is-windows-visible")) {
-            window.location.reload();
+          if (desktop.isDesktop()) {
+            desktop.isWindowVisible().then((visible) => {
+              if (!visible) window.location.reload();
+            });
           }
           this.refreshTodayNotifications();
           this.resetAppOnDayChange();
@@ -508,7 +503,7 @@ export default {
       }
     },
     checkForUpdates: function () {
-      if (this.isElectron() && this.$store.getters.config.checkUpdates) {
+      if (desktop.isDesktop() && this.$store.getters.config.checkUpdates) {
         const axios = require("axios").default;
         axios
           .get("https://app.weektodo.me/version.json")
@@ -517,8 +512,8 @@ export default {
       }
     },
     checksOnLoadApp: function () {
-      if (this.isElectron()) {
-        require("electron").ipcRenderer.on("initial-checks", () => {
+      if (desktop.isDesktop()) {
+        desktop.onInitialChecks(() => {
           this.checkVersion();
           this.checkForUpdates();
         });
@@ -533,22 +528,16 @@ export default {
       }
     },
     downloadNewVersion: function () {
-      let isElectron = require("is-electron");
-      if (isElectron()) {
-        require("electron").shell.openExternal("https://weektodo.me", "_blank");
-      } else {
-        window.open("https://weektodo.me", "_blank");
-      }
+      desktop.openExternal("https://weektodo.me");
     },
     seeChangeLog: function () {
-      window.open("https://weektodo.me/changelog", "_blank");
+      desktop.openExternal("https://weektodo.me/changelog");
     },
-    syncElectronConfig: function () {
-      const { ipcRenderer } = require("electron");
-      ipcRenderer.send("set-tray-context-menu-label", { open: this.$t("ui.open"), quit: this.$t("ui.quit") });
-      ipcRenderer.send("set-open-on-startup", this.$store.getters.config.openOnStartup);
-      ipcRenderer.send("set-run-in-background", this.$store.getters.config.runInBackground);
-      ipcRenderer.send("set-dark-tray-icon", this.$store.getters.config.darkTrayIcon);
+    syncDesktopConfig: function () {
+      desktop.setTrayContextMenuLabel({ open: this.$t("ui.open"), quit: this.$t("ui.quit") });
+      desktop.setOpenOnStartup(this.$store.getters.config.openOnStartup);
+      desktop.setRunInBackground(this.$store.getters.config.runInBackground);
+      desktop.setDarkTrayIcon(this.$store.getters.config.darkTrayIcon);
     },
   },
   computed: {

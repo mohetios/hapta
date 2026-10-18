@@ -1,3 +1,10 @@
+## Unreleased
+
+- Replacing Electron with Tauri: much smaller installers and lower memory use
+- Every push to main publishes its own release
+- **Upgrading from an Electron build:** your tasks don't carry over automatically. Export a backup (Settings → Export) in the old version, then import it in the new one.
+
+
 ## v2.2.0
 Feb 14, 2024
 

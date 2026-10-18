@@ -13,6 +13,7 @@
 </template>
 
 <script>
+    import desktop from "../helpers/desktop";
 
     export default {
         name: "donateModal",
@@ -38,15 +39,10 @@
                 }
             },
             emailLink: function (link) {
-                window.open(link);
+                desktop.openExternal(link);
             },
             externaLink: function (link) {
-                let isElectron = require("is-electron");
-                if (isElectron()) {
-                    require('electron').shell.openExternal(link, '_blank');
-                } else {
-                    window.open(link, '_blank');
-                }
+                desktop.openExternal(link);
             },
             tagIdLink: function (id) {
                 document.getElementById(id).click();

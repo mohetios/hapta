@@ -16,7 +16,8 @@ pnpm-debug.log*
 .idea
 .vscode
 
-#Electron-builder output
-/dist_electron
+# Tauri build output
+/src-tauri/target
+/src-tauri/gen/schemas
 
 .env
