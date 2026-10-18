@@ -11,18 +11,18 @@
             <img
               class="logo align-self-center"
               src="/img/weektodo-isologo-color.svg"
-              alt="WeekToDo"
-              title="WeekToDo Logo"
+              alt="Hapta"
+              title="Hapta Logo"
               width="256"
             />
             <img
               class="logo logo-white align-self-center"
               src="/img/weektodo-isologo-white.svg"
-              alt="WeekToDo"
-              title="WeekToDo Logo"
+              alt="Hapta"
+              title="Hapta Logo"
               width="256"
             />
-            <!-- <h5 style="margin-top: 15px; margin-bottom: 2px;">WeekToDo</h5> -->
+            <!-- <h5 style="margin-top: 15px; margin-bottom: 2px;">Hapta</h5> -->
             <span class="mt-3" style="font-size: 0.75rem"
               >{{ $t("about.version") }} {{ version }} •
               <a

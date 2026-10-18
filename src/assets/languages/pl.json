@@ -12,7 +12,7 @@
     "blog": "Blog",
     "collaborators": "Współpracownicy",
     "contributors": "Współtwórcy",
-    "desc": "WeekToDo to minimalistyczny planer tygodniowy skoncentrowany na prywatności.",
+    "desc": "Hapta to minimalistyczny planer tygodniowy skoncentrowany na prywatności.",
     "license": "Licencja"
   },
   "donate": {
@@ -32,11 +32,11 @@
     "share": "Dzielić",
     "shareWithFriends": "Podziel się z przyjaciółmi",
     "translate": "Tłumaczyć",
-    "shareMessage": "Planuję mój tydzień z WeekToDo, darmowym, minimalistycznym tygodniowym planerem skoncentrowanym na prywatności i myślę, że Tobie też się spodoba. \nSprawdź to!",
-    "supportMessage1": "WeekToDo to darmowa aplikacja wspierana przez użytkowników takich jak Ty! \nJeśli uważasz, że WeekToDo jest przydatne, rozważ wsparcie nas w każdy możliwy sposób. \nTwoje wsparcie robi różnicę. \nDziękujemy za korzystanie z WeekToDo.",
-    "supportMessage2": "Twoje wsparcie robi różnicę. \nDziękujemy za wsparcie WeekToDo 😊",
+    "shareMessage": "Planuję mój tydzień z Hapta, darmowym, minimalistycznym tygodniowym planerem skoncentrowanym na prywatności i myślę, że Tobie też się spodoba. \nSprawdź to!",
+    "supportMessage1": "Hapta to darmowa aplikacja wspierana przez użytkowników takich jak Ty! \nJeśli uważasz, że Hapta jest przydatne, rozważ wsparcie nas w każdy możliwy sposób. \nTwoje wsparcie robi różnicę. \nDziękujemy za korzystanie z Hapta.",
+    "supportMessage2": "Twoje wsparcie robi różnicę. \nDziękujemy za wsparcie Hapta 😊",
     "supportUs": "Wesprzyj nas",
-    "splashMessage": "Podoba Ci się WeekToDo? \nProjekt można wesprzeć tutaj!"
+    "splashMessage": "Podoba Ci się Hapta? \nProjekt można wesprzeć tutaj!"
   },
   "generatedData": {
     "data10": "Napoje bezalkoholowe",
@@ -76,7 +76,7 @@
     "display": "Wyświetlacz",
     "export": "Eksport",
     "general": "Ogólny",
-    "goToNewDomain": "Zmieniamy witrynę WeekToDo na nową domenę, a ta zostanie wycofana 1 kwietnia 2022 roku. Aby zachować swoje dane, musisz je wyeksportować z tej domeny, a następnie zaimportować w nowej domenie (Z menu konfiguracyjnego). \nPamiętaj, że jeśli nie przeniesiesz danych, utracisz informacje, które Twoja przeglądarka przechowuje w tej domenie. \nPrzepraszamy za wszelkie niedogodności z tym związane.",
+    "goToNewDomain": "Zmieniamy witrynę Hapta na nową domenę, a ta zostanie wycofana 1 kwietnia 2022 roku. Aby zachować swoje dane, musisz je wyeksportować z tej domeny, a następnie zaimportować w nowej domenie (Z menu konfiguracyjnego). \nPamiętaj, że jeśli nie przeniesiesz danych, utracisz informacje, które Twoja przeglądarka przechowuje w tej domenie. \nPrzepraszamy za wszelkie niedogodności z tym związane.",
     "gotoNewDomainBtn": "Przejdź do nowej domeny",
     "import": "Import",
     "invalidFile": "Niepoprawny plik",
@@ -113,7 +113,7 @@
     "back": "Poprzednia wskazówka",
     "next": "Następna wskazówka",
     "tip1": "Możesz utworzyć nowe zadanie, klikając dowolny obszar list.",
-    "tip13": "WeekToDo przechowuje informacje na Twoim komputerze. \nJeśli chcesz zmienić komputer lub przeglądarkę, pamiętaj o utworzeniu kopii zapasowej. \nMożesz to zrobić w menu ustawień.",
+    "tip13": "Hapta przechowuje informacje na Twoim komputerze. \nJeśli chcesz zmienić komputer lub przeglądarkę, pamiętaj o utworzeniu kopii zapasowej. \nMożesz to zrobić w menu ustawień.",
     "tip14": "Kliknij i przeciągnij środkowy podział, aby zmienić wysokość kalendarza i list niestandardowych. \nKliknij dwukrotnie, aby przywrócić rozmiar.",
     "tip15": "Liczbę kolumn i powiększenie aplikacji możesz zmienić w panelu konfiguracyjnym.",
     "tip16": "Kliknij trzy kropki w zadaniach, aby zobaczyć szczegóły.",
@@ -165,10 +165,10 @@
     "calendar": "Kalendarz",
     "cancel": "Anulować",
     "changeLog": "Dziennik zmian",
-    "compatible": "Przepraszamy, WeekToDo nie jest kompatybilny z twoją przeglądarką internetową. \nSpróbuj go zaktualizować lub użyj innego.",
+    "compatible": "Przepraszamy, Hapta nie jest kompatybilny z twoją przeglądarką internetową. \nSpróbuj go zaktualizować lub użyj innego.",
     "completeAll": "Ukończ wszystko",
     "download": "(Ściągnij)",
-    "mobileWarning": "WeekToDo to aplikacja desktopowa i na razie nie jest gotowa do wyświetlania w tej rozdzielczości. \n:(",
+    "mobileWarning": "Hapta to aplikacja desktopowa i na razie nie jest gotowa do wyświetlania w tej rozdzielczości. \n:(",
     "newCustomList": "Nowa lista niestandardowa",
     "newVersionAvailable": "Nowa wersja dostępna",
     "postpone": "Odłożyć",
@@ -208,7 +208,7 @@
   "welcome": {
     "allReady": "Wszystko gotowe",
     "allReadySub": "Jeśli masz jakieś pytania, możesz znaleźć wskazówki na pasku bocznym",
-    "allReadyText": "Wszystko jest gotowe, abyś mógł cieszyć się WeekTodo.",
+    "allReadyText": "Wszystko jest gotowe, abyś mógł cieszyć się Hapta.",
     "back": "Poprzedni",
     "next": "Następny",
     "privacy": "Prywatność",
@@ -217,7 +217,7 @@
     "ready": "gotowy",
     "theme": "Motyw",
     "themeText": "Możesz wybrać jasny lub ciemny motyw zgodnie z własnymi preferencjami.",
-    "welcome": "Witamy w WeekToDo",
+    "welcome": "Witamy w Hapta",
     "welcomeText": "Minimalistyczny Tygodniowy Menedżer Zadań skoncentrowany na prywatności. \nAby rozpocząć, wybierz swój język."
   }
 }

@@ -1,16 +1,18 @@
 {
-  "name": "WeekToDo",
+  "name": "hapta",
   "version": "2.2.0",
   "private": true,
-  "description": "Free and Open Source Minimalist Weekly Planner focused on privacy.",
-  "author": "Manuel Ernesto Garcia <contact@weektodo.me> (https://weektodo.me/)",
-  "homepage": "https://weektodo.me",
+  "description": "Minimalist weekly planner with Jalali (Persian) calendar and RTL support. A fork of WeekToDo.",
+  "author": "Ali Zemani <mehot1@gmail.com> (https://github.com/mohetios)",
+  "homepage": "https://github.com/mohetios/hapta",
   "keywords": [
     "ToDo",
     "Weekly Planner",
     "to-do",
     "Productivity",
-    "Minimalist"
+    "Minimalist",
+    "Persian",
+    "Jalali"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -24,7 +26,7 @@
     "test": "echo success"
   },
   "main": "background.js",
-  "repository": "https://github.com/manuelernestog/weektodo",
+  "repository": "https://github.com/mohetios/hapta",
   "dependencies": {
     "@achrinza/node-ipc": "^10.1.10",
     "@manuelernestog/click-handler": "^1.4.0",

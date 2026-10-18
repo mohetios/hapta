@@ -12,20 +12,20 @@
             v-if="darkTheme"
             class="logo"
             src="../../public/img/weektodo-isologo-white.svg"
-            alt="WeekToDo Logo"
+            alt="Hapta Logo"
             style="display: inline"
           />
           <img
             v-else
             class="logo"
             src="../../public/img/weektodo-isologo-color.svg"
-            alt="WeekToDo Logo"
+            alt="Hapta Logo"
             style="display: inline"
           />
         </div>
         <div v-show="sponsor" class="d-flex justify-content-center" style="height: 50px">
           <a v-if="sponsor" :href="sponsor.url" class="d-flex sponsor-container align-items-center" target="_blank">
-            <img :src="sponsor.img" class="sponsor-img" alt="WeekToDo Sponsor" />
+            <img :src="sponsor.img" class="sponsor-img" alt="Hapta Sponsor" />
             <div class="my-2 mx-2">
               <div class="fw-bolder d-inline" style="text-decoration: unset !important">{{ sponsor.name }}</div>
               <div class="opacity-50 mx-2 d-inline">{{ sponsor.message }}</div>
@@ -65,7 +65,7 @@ export default {
       var sponsors = [];
 
       sponsors.push({
-        name: "WeekToDo",
+        name: "Hapta",
         message: this.$t("donate.splashMessage"),
         url: "https://weektodo.me/support-us",
         img: "/icons/ko-fi.png",

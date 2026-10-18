@@ -413,7 +413,7 @@ export default {
       if (!(this.$store.getters.config.notificationOnStartup && !this.$store.getters.config.firstTimeOpen)) return;
       setTimeout(
         function () {
-          new Notification("WeekToDo", {
+          new Notification("Hapta", {
             body: this.initialNotificationText(),
             icon: "/favicon.ico",
             silent: true,

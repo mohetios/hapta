@@ -4,12 +4,12 @@ module.exports = {
       nodeIntegration: true,
       customFileProtocol: './',
       builderOptions: {
-        appId: "weektodo-app.netlify.app",
-        productName: "WeekToDo",
+        appId: "com.mohetios.hapta",
+        productName: "Hapta",
         publish: ["github"],
         linux: {
           category: "Utility",
-          description: "Free and Open Source Minimalist Weekly Planner and To Do list App focused on privacy.",
+          description: "Minimalist weekly planner with Jalali (Persian) calendar and RTL support.",
           target: ["deb", "rpm", "pacman","AppImage"],
           icon: "build/icon.icns",
         },
