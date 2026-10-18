@@ -76,7 +76,7 @@
   }
 
   .item-img {
-    margin-right: 24px;
+    margin-inline-end: 24px;
   }
 
   .dark-theme .card {

@@ -1,6 +1,6 @@
 import storageRepository from "./storageRepository";
 import { version } from "../../package.json";
-import moment from "moment";
+import { todayId, addDays } from "../helpers/dates";
 
 export default {
   load() {
@@ -25,7 +25,7 @@ export default {
         openOnStartup: true,
         runInBackground: true,
         moveOldTasks: true,
-        dateToShowInitialDonateModal: moment().add(15, "d").format("YYYY-MM-DD"),
+        dateToShowInitialDonateModal: addDays(todayId(), 15),
         InitialDonateModalShown: false,
         mainDividerPosition: 1,
         darkTrayIcon: false,
@@ -37,8 +37,9 @@ export default {
         moveCompletedTaskToBottom: true,
         moveCompletedSubTaskToBottom: true,
         fullscreenToDoModal: false,
-        weekStartOnMonday: true,
-        lastDayOpened: moment().format("YYYY-MM-DD")
+        weekStart: 1,
+        calendarSystem: "gregory",
+        lastDayOpened: todayId()
       };
       storageRepository.set("config", default_config);
       return default_config;

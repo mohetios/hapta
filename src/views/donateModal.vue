@@ -34,7 +34,7 @@
                     <div class="input-group mt-2 mb-3 px-3">
                       <input type="text" class="form-control" value="https://weektodo.me" disabled>
                       <button class="btn btn-outline-secondary" type="button" @click="copy">{{ $t("donate.copy") }}
-                        <i class="bi-clipboard" style="padding-left: 5px;"></i></button>
+                        <i class="bi-clipboard" style="padding-inline-start: 5px;"></i></button>
                     </div>
                     <button class="btn mt-auto" type="button" @click="goHome">
                       <i class="bi-arrow-left a"></i> {{ $t("donate.goBack") }}

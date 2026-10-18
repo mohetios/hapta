@@ -30,20 +30,10 @@
 
       <div v-if="repeatingType" class="d-flex flex-column">
         <div v-show="repeatingType == '5' || (repeatingEvent && repeatingType == '2')" class="weekDays-selector mt-3 mb-1">
-          <input type="checkbox" :disabled="repeatingEvent" id="weekday-mon" class="weekday" v-model="weekdays.mon" />
-          <label for="weekday-mon">{{ moments().isoWeekday(1).locale(language).format("dd")[0] }}</label>
-          <input type="checkbox" :disabled="repeatingEvent" id="weekday-tue" class="weekday" v-model="weekdays.tue" />
-          <label for="weekday-tue">{{ moments().isoWeekday(2).locale(language).format("dd")[0] }}</label>
-          <input type="checkbox" :disabled="repeatingEvent" id="weekday-wed" class="weekday" v-model="weekdays.wed" />
-          <label for="weekday-wed">{{ moments().isoWeekday(3).locale(language).format("dd")[0] }}</label>
-          <input type="checkbox" :disabled="repeatingEvent" id="weekday-thu" class="weekday" v-model="weekdays.thu" />
-          <label for="weekday-thu">{{ moments().isoWeekday(4).locale(language).format("dd")[0] }}</label>
-          <input type="checkbox" :disabled="repeatingEvent" id="weekday-fri" class="weekday" v-model="weekdays.fri" />
-          <label for="weekday-fri">{{ moments().isoWeekday(5).locale(language).format("dd")[0] }}</label>
-          <input type="checkbox" :disabled="repeatingEvent" id="weekday-sat" class="weekday" v-model="weekdays.sat" />
-          <label for="weekday-sat">{{ moments().isoWeekday(6).locale(language).format("dd")[0] }}</label>
-          <input type="checkbox" :disabled="repeatingEvent" id="weekday-sun" class="weekday" v-model="weekdays.sun" />
-          <label for="weekday-sun">{{ moments().isoWeekday(7).locale(language).format("dd")[0] }}</label>
+          <template v-for="day in weekdayOrder" :key="day.key">
+            <input type="checkbox" :disabled="repeatingEvent" :id="'weekday-' + day.key" class="weekday" v-model="weekdays[day.key]" />
+            <label :for="'weekday-' + day.key">{{ day.label }}</label>
+          </template>
         </div>
 
         <div v-show="repeatingType == '6'" class="mt-3 mb-1">
@@ -81,13 +71,11 @@
           v-model="ocurrences"
           :disabled="repeatingEvent"
         />
-        <input
-          v-if="ocurrencesType == 'untilDate'"
-          type="date"
-          class="form-control re-input last-input"
-          v-model="untilDate"
-          :disabled="repeatingEvent"
-        />
+        <date-picker v-if="ocurrencesType == 'untilDate'" v-model="untilDate" :disabled="!!repeatingEvent">
+          <button type="button" class="form-control re-input last-input until-date" :disabled="repeatingEvent">
+            {{ untilDate ? format(untilDate, { year: "numeric", month: "short", day: "numeric" }) : $t("todoDetails.untilDate") }}
+          </button>
+        </date-picker>
       </div>
 
       <div class="d-flex flex-row re-form-row re-input">
@@ -105,13 +93,15 @@
 <script>
 import { RRule, rrulestr } from "rrule";
 import repeatingEventRepository from "../../repositories/repeatingEventRepository";
-import moment from "moment";
+import { format, weekdayName, weekStart, calendarSystem, idToUtcDate, utcDateToId, dateToId } from "../../helpers/dates";
+import datePicker from "../../components/datePicker.vue";
 import { Dropdown } from "bootstrap";
 import repeatingEventHelper from "../../helpers/repeatingEvents.js";
 import repeatingEventByDateRepository from "../../repositories/repeatingEventByDateRepository";
 
 export default {
   name: "RepatingEvent",
+  components: { datePicker },
   emits: ["repeatingEventSelected"],
   data() {
     return {
@@ -131,7 +121,7 @@ export default {
   methods: {
     done() {
       const rule = this.repeatingEventRule();
-      var repeatingEventId = this.repeatingEvent ? this.repeatingEvent : moment().format("x");
+      var repeatingEventId = this.repeatingEvent ? this.repeatingEvent : String(Date.now());
       if (rule) {
         let date = this.todo.listId;
         var re_by_date = this.$store.getters.repeatingEventByDate[date];
@@ -169,7 +159,7 @@ export default {
       var ruleOptions = {
         freq: this.repeatingType,
         interval: this.interval,
-        dtstart: moment.utc(this.todo.listId, "YYYYMMDD").toDate(),
+        dtstart: idToUtcDate(this.todo.listId),
       };
 
       if (this.repeatingType == 4) {
@@ -198,14 +188,14 @@ export default {
       if (this.ocurrencesType == "ocurrences") {
         ruleOptions.count = this.ocurrences;
       } else if (this.ocurrencesType == "untilDate") {
-        ruleOptions.until = moment(this.untilDate);
+        // UTC midnight like dtstart, so the until day is included in every timezone
+        ruleOptions.until = idToUtcDate(this.untilDate);
       }
       return new RRule(ruleOptions);
     },
     generateRepeatingEvent(rule, repeatingEventId) {
       var todo_data = JSON.parse(JSON.stringify(this.todo));
       todo_data.repeatingEvent = repeatingEventId;
-      const rule2 = rrulestr(rule.toString()); //Cloning the rule for some error in the library don't works with original rule
       var re_event = {
         start_date: rule.options.dtstart,
         repeating_rule: rule.toString(),
@@ -213,12 +203,14 @@ export default {
         ocurrencesType: this.ocurrencesType,
         data: todo_data,
         id: repeatingEventId,
+        // Monthly/yearly repeats follow the calendar system active when the event was created
+        calendar: calendarSystem(),
       };
 
       if (this.ocurrencesType == "ocurrences") {
-        re_event.end_date = moment(rule2.all().slice(-1)[0]);
+        re_event.end_date = idToUtcDate(repeatingEventHelper.occurrenceIds(re_event, new Date(0), new Date(8.64e15)).at(-1));
       } else if (this.ocurrencesType == "untilDate") {
-        re_event.end_date = moment(rule.options.until).toDate();
+        re_event.end_date = rule.options.until;
       } else {
         var date = new Date();
         date.setFullYear(date.getFullYear() + 15);
@@ -227,9 +219,7 @@ export default {
 
       return re_event;
     },
-    moments: function (date) {
-      return moment(date);
-    },
+    format,
   },
   watch: {
     repeatingEvent: function (newVal) {
@@ -241,9 +231,13 @@ export default {
         this.interval = rule.options.interval;
         this.ocurrences = rule.options.count;
         this.ocurrencesType = re.ocurrencesType;
-        this.untilDate = rule.options.until
-          ? rule.options.until.toLocaleDateString("en-GB").split("/").reverse().join("-")
-          : null;
+        const until = rule.options.until;
+        // Older rules stored local midnight, newer ones UTC midnight
+        this.untilDate = !until
+          ? null
+          : until.getUTCHours() || until.getUTCMinutes()
+            ? dateToId(until)
+            : utcDateToId(until);
         if (rule.options.byweekday) {
           rule.options.byweekday.includes(0) && (this.weekdays.mon = true);
           rule.options.byweekday.includes(1) && (this.weekdays.tue = true);
@@ -263,15 +257,19 @@ export default {
         this.ocurrencesType = "";
         this.daysOfMonth = "";
         this.interval = 1;
-        this.untilDate = "";
         this.ocurrences = null;
         this.untilDate = null;
       }
     },
   },
   computed: {
-    language: function () {
-      return this.$store.getters.config.language;
+    // ISO weekday per key; checkboxes start on the configured first day of the week
+    weekdayOrder: function () {
+      const keys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+      return Array.from({ length: 7 }, (_, i) => {
+        const day = (weekStart() + i) % 7;
+        return { key: keys[day], label: weekdayName(day || 7, "narrow") };
+      });
     },
   },
 };
@@ -281,12 +279,12 @@ export default {
 @import "/src/assets/style/globalVars.scss";
 
 .header-menu-icons {
-  margin-left: 6px;
+  margin-inline-start: 6px;
   @include btn-icon;
 }
 
 .repeating-event-dropdown {
-  margin-left: -80px !important;
+  margin-inline-start: -80px !important;
   width: 200px;
 }
 
@@ -315,12 +313,10 @@ export default {
   box-shadow: unset;
 }
 
-[type="date"]::-webkit-inner-spin-button {
-  display: none;
-}
-
-[type="date"]::-webkit-calendar-picker-indicator {
-  display: none;
+.until-date {
+  text-align: start;
+  background-color: transparent;
+  color: inherit;
 }
 
 .dark-theme input {
@@ -357,7 +353,7 @@ export default {
   background: #eaecef;
   height: 20px;
   width: 20px;
-  margin-right: 3px;
+  margin-inline-end: 3px;
   line-height: 20px;
   text-align: center;
   cursor: pointer;

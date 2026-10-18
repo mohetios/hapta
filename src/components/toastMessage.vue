@@ -36,7 +36,7 @@
 <style scoped>
   .sub-text {
     font-weight: bold;
-    margin-left: 5px;
+    margin-inline-start: 5px;
     cursor: pointer;
   }
 

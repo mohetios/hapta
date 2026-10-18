@@ -40,7 +40,7 @@
 <script>
 import toDoListRepository from "../repositories/toDoListRepository";
 import { Modal, Toast } from "bootstrap";
-import moment from "moment";
+import { formatTime } from "../helpers/dates";
 import notifications from "../helpers/notifications";
 import linkifyStr from 'linkify-string';
 import ClickHandler from "@manuelernestog/click-handler";
@@ -131,11 +131,7 @@ export default {
       if (subTask.checked && this.moveSubtaskToBotttom) { todoList.push(todoList.splice(index, 1)[0]); }
       toDoListRepository.update(this.activeTodo.toDoListId, this.$store.getters.todoLists[this.activeTodo.toDoListId]);
     },
-    timeFormat: function (date) {
-      if (date) {
-        return moment(date, "HH:mm").format("hh:mm a");
-      }
-    },
+    timeFormat: formatTime,
     linkifyText: function (text) {
       return linkifyStr(text, this.options);
     },
@@ -243,7 +239,7 @@ export default {
 .time-details {
   opacity: 0.6;
   display: inline;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 .todo-item.checked-todo .time-details {
@@ -276,8 +272,8 @@ export default {
   font-size: 1.3rem;
   cursor: pointer;
   margin-top: 1px;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-inline-start: 5px;
+  margin-inline-end: 5px;
   color: grey;
   height: 1.3rem;
   flex-grow: 0;
@@ -287,8 +283,8 @@ export default {
   font-size: 1rem;
   cursor: pointer;
   margin-top: 3px;
-  margin-left: 5px;
-  margin-right: 0px;
+  margin-inline-start: 5px;
+  margin-inline-end: 0px;
   color: grey;
   height: 1.1rem;
   flex-grow: 0;
@@ -343,7 +339,7 @@ export default {
     width: 14px;
     min-height: 14px;
     height: 14px;
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
 
   label {
@@ -358,7 +354,7 @@ export default {
 
 .cicle-icon {
   font-size: 10px;
-  margin-right: 5px;
+  margin-inline-end: 5px;
 }
 
 .bi-check-circle-fill,

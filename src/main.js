@@ -3,8 +3,7 @@ import App from "./App.vue";
 import { store } from "./store/store";
 
 import { createI18n } from "vue-i18n";
-import { languages } from "./assets/languages/languages.js";
-const messages = Object.assign(languages);
+import { messages } from "./assets/languages/languages.js";
 const i18n = createI18n({
   legacy: false,
   locale: "en",
@@ -13,9 +12,10 @@ const i18n = createI18n({
 });
 
 import "bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+// Bootstrap CSS (LTR/RTL) is loaded by helpers/languageHelper.js
 
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "vazirmatn/Vazirmatn-Variable-font-face.css";
 
 import "./assets/style/globalVars.scss";
 import "./assets/style/main.scss";

@@ -60,15 +60,15 @@ Every push to `main` also publishes its own release, tagged `v<version>-build.<r
 
 ## Build from source
 
-Requires Node.js 22+ and Yarn, plus Rust and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for the desktop app.
+Requires Node.js 22+ and pnpm, plus Rust and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for the desktop app.
 
 ```bash
 git clone https://github.com/mohetios/hapta
 cd hapta
-yarn install
-yarn serve            # web version
-yarn tauri:serve      # desktop version
-yarn tauri:build      # package the desktop app
+pnpm install
+pnpm serve            # web version
+pnpm tauri:serve      # desktop version
+pnpm tauri:build      # package the desktop app
 ```
 
 ## Credits

@@ -21,14 +21,9 @@
       :title="$t('about.about')"
     />
     <i v-if="showCalendar" class="bi-house" @click="setTodayDate" :title="$t('ui.today')"></i>
-    <datepicker
-      v-if="datepickerEnabled"
-      id="side-bar-date-picker-input"
-      v-model="pickedDate"
-      :locale="language"
-      :weekStartsOn="weekStartOnMonday"
-    />
-    <i v-if="showCalendar" class="bi-calendar-event" @click="changeDate" :title="$t('ui.calendar')"> </i>
+    <date-picker v-if="showCalendar" :side="pickerSide" @update:model-value="$emit('changeDate', $event)">
+      <i class="bi-calendar-event" :title="$t('ui.calendar')"></i>
+    </date-picker>
     <!-- <i class="bi-search" :title="$t('donate.supportUs')"></i>
     <i class="bi-filter" :title="$t('donate.supportUs')" ></i> -->
     <i
@@ -85,10 +80,10 @@
 </template>
 
 <script>
-import moment from "moment";
+import { todayId } from "../../helpers/dates";
 import customToDoListIdsRepository from "../../repositories/customToDoListIdsRepository";
 import toDoListRepository from "../../repositories/toDoListRepository";
-import Datepicker from "vue3-datepicker";
+import datePicker from "../datePicker.vue";
 import languageHelper from "../../helpers/languageHelper.js";
 import desktop from "../../helpers/desktop";
 
@@ -96,13 +91,7 @@ export default {
   name: "sideBar",
   emits: ["changeDate"],
   components: {
-    Datepicker,
-  },
-  data() {
-    return {
-      pickedDate: new Date(),
-      datepickerEnabled: false,
-    };
+    datePicker,
   },
   mounted() {
     window.addEventListener("beforeprint", () => {
@@ -118,30 +107,15 @@ export default {
     });
   },
   methods: {
-    changeDate: function () {
-      this.datepickerEnabled = true;
-      this.$nextTick(function () {
-        document.getElementById("side-bar-date-picker-input").click();
-        document.getElementById("side-bar-date-picker-input").focus();
-        document.getElementById("side-bar-date-picker-input").addEventListener("focusout", this.resetDatePicker);
-        document.getElementById("side-bar-date-picker-input").onkeydown = function (evt) {
-          evt.keyCode == 27 && document.getElementById("side-bar-date-picker-input").blur();
-        };
-      });
-    },
     setTodayDate: function () {
-      this.$emit("changeDate", moment().format("YYYYMMDD"));
+      this.$emit("changeDate", todayId());
     },
     newCustomTodoList: function () {
-      const customTodoListId = { listId: moment().format("YYYYMMDDTHHmmssS"), listName: "" };
+      const customTodoListId = { listId: `${todayId()}T${Date.now()}`, listName: "" };
       this.$store.commit("actionsCListCreatedUpdate", true);
       this.$store.commit("newCustomTodoList", customTodoListId);
       customToDoListIdsRepository.update(this.$store.getters.cTodoListIds);
       toDoListRepository.update(customTodoListId.listId, this.$store.getters.todoLists[customTodoListId.listId]);
-    },
-    resetDatePicker: function () {
-      document.getElementById("side-bar-date-picker-input").removeEventListener("focusout", this.resetDatePicker);
-      this.datepickerEnabled = false;
     },
     openConfigModal: function () {
       document.getElementById("config-general-tab").click();
@@ -153,16 +127,6 @@ export default {
       window.print();
     },
   },
-  watch: {
-    pickedDate: function (val) {
-      if (this.datepickerEnabled) {
-        document.getElementById("side-bar-date-picker-input").removeEventListener("focusout", this.resetDatePicker);
-        this.datepickerEnabled = false;
-        this.$emit("changeDate", moment(val).format("YYYYMMDD"));
-        this.pickedDate = new Date();
-      }
-    },
-  },
   computed: {
     showCustomList: function () {
       return this.$store.getters.config.customList;
@@ -170,12 +134,9 @@ export default {
     showCalendar: function () {
       return this.$store.getters.config.calendar;
     },
-    weekStartOnMonday: function () {
-      return this.$store.getters.config.weekStartOnMonday ? 1 : 0;
-    },
-    language: function () {
-      let lang = this.$store.getters.config.language;
-      return languageHelper.getLanguagePack(lang);
+    // Sidebar sits on the inline-start edge, so open toward the content
+    pickerSide: function () {
+      return languageHelper.dir(this.$store.getters.config.language) === "rtl" ? "left" : "right";
     },
   },
 };
@@ -187,7 +148,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  float: left;
+  float: inline-start;
   background-color: #fcfcfc;
 }
 
@@ -262,7 +223,7 @@ sidebar-icon:active {
 
   i {
     font-size: 0.99rem;
-    margin-right: 11px;
+    margin-inline-end: 11px;
     display: inline-block;
   }
 }

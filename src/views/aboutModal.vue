@@ -84,7 +84,7 @@
               </div>
               <div class="horizontal-divider mt-2 mb-3"></div>
               <div class="d-flex">
-                <span style="margin-top: 10px; margin-right: 10px"
+                <span style="margin-top: 10px; margin-inline-end: 10px"
                   >{{ $t("about.madeWith") }} <i class="bi-heart-fill" style="color: red"></i> {{ $t("about.inCuba") }}</span
                 >
                 <a class="btn flex-fill" href="https://weektodo.me/support-us" target="_blank"

@@ -17,7 +17,7 @@
                   <div class="align-content-start mx-3 card-text">
                     {{sponsor.name}}
                   </div>
-                  <div style="margin-left: auto; color: #1688d0;"><strong> +{{sponsor.contribution}} 💎</strong>
+                  <div style="margin-inline-start: auto; color: #1688d0;"><strong> +{{sponsor.contribution}} 💎</strong>
                   </div>
                 </a>
               </div>

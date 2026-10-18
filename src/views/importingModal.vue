@@ -34,7 +34,7 @@ export default {
   top: unset;
   height: unset;
   margin: unset;
-  margin-right: 20px;
+  margin-inline-end: 20px;
 }
 
 .modal-dialog {

@@ -1,5 +1,4 @@
-import { rrulestr } from "rrule";
-import moment from "moment";
+import repeatingEventHelper from "../../helpers/repeatingEvents";
 
 const state = {
   repeatingEventDateCache: {},
@@ -21,12 +20,11 @@ const mutations = {
 
     future_date.setFullYear(today.getFullYear() + 10);
     for (const [id, re] of Object.entries(repeatingEventList)) {
-      const rule = rrulestr(re.repeating_rule);
-      rule.between(today, future_date).forEach((date) => {
-        if (state.repeatingEventDateCache[moment.utc(date).format("YYYYMMDD")]) {
-          state.repeatingEventDateCache[moment.utc(date).format("YYYYMMDD")].push(id);
+      repeatingEventHelper.occurrenceIds(re, today, future_date).forEach((date) => {
+        if (state.repeatingEventDateCache[date]) {
+          state.repeatingEventDateCache[date].push(id);
         } else {
-          state.repeatingEventDateCache[moment.utc(date).format("YYYYMMDD")] = [id];
+          state.repeatingEventDateCache[date] = [id];
         }
       });
     }
@@ -35,12 +33,11 @@ const mutations = {
     var today = new Date();
     var future_date = new Date();
     future_date.setFullYear(today.getFullYear() + 10);
-    const rule = rrulestr(re.repeating_rule);
-    rule.between(today, future_date).forEach((date) => {
-      if (state.repeatingEventDateCache[moment.utc(date).format("YYYYMMDD")]) {
-        state.repeatingEventDateCache[moment.utc(date).format("YYYYMMDD")].push(re.id);
+    repeatingEventHelper.occurrenceIds(re, today, future_date).forEach((date) => {
+      if (state.repeatingEventDateCache[date]) {
+        state.repeatingEventDateCache[date].push(re.id);
       } else {
-        state.repeatingEventDateCache[moment.utc(date).format("YYYYMMDD")] = [re.id];
+        state.repeatingEventDateCache[date] = [re.id];
       }
     });
   },

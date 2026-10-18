@@ -1,13 +1,12 @@
 import toDoListRepository from "../repositories/toDoListRepository";
 import customToDoListIdsRepository from "../repositories/customToDoListIdsRepository";
-import moment from "moment";
+import { todayId, addDays } from "./dates";
 
 export default {
     create(vue) {
-        // let yesterday_id = moment().subtract(1, 'd').format('YYYYMMDD');
-        let today_id = moment().format('YYYYMMDD');
-        let tomorrow_id = moment().add(1, 'd').format('YYYYMMDD');
-        let after_tomorrow_id = moment().add(2, 'd').format('YYYYMMDD');
+                let today_id = todayId();
+        let tomorrow_id = addDays(todayId(), 1);
+        let after_tomorrow_id = addDays(todayId(), 2);
         let custom_list1_id = create_custom_list(vue, vue.$t("generatedData.list1"));
         let custom_list2_id = create_custom_list(vue, vue.$t("generatedData.list2"));
         create_custom_list(vue, vue.$t("generatedData.list3"));

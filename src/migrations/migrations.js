@@ -1,5 +1,5 @@
 import configRepository from "../repositories/configRepository";
-import moment from "moment";
+import { todayId, addDays } from "../helpers/dates";
 
 export default {
   migrate() {
@@ -12,6 +12,7 @@ export default {
     telemetric();
     v2_1_0();
     v2_2_0();
+    calendarSystems();
   },
 };
 
@@ -36,7 +37,7 @@ function configCalendarZoomColumnsCalendarHeight() {
 
 function configNotifications() {
   let config = configRepository.load();
-  if (!("startupNotification" in config)) {
+  if (!("notificationOnStartup" in config)) {
     config["notificationOnStartup"] = true;
     config["notificationSound"] = "pop";
     config["openOnStartup"] = true;
@@ -49,7 +50,7 @@ function runInBackground() {
   if (!("runInBackground" in config)) {
     config["runInBackground"] = true;
     config["moveOldTasks"] = true;
-    config["dateToShowInitialDonateModal"] = moment().add(15, "d").format("YYYY-MM-DD");
+    config["dateToShowInitialDonateModal"] = addDays(todayId(), 15);
     config["InitialDonateModalShown"] = false;
     configRepository.update(config);
   }
@@ -74,7 +75,8 @@ function trayIcon() {
 
 function telemetric() {
   let config = configRepository.load();
-  if (!("reportErrors" in config)) {
+  // reportErrors left the defaults with Sentry; compactView is set here and in defaults
+  if (!("compactView" in config)) {
     config["reportErrors"] = false;
     config["customColumns"] = config["columns"];
     config["compactView"] = true;
@@ -99,7 +101,17 @@ function v2_1_0() {
 function v2_2_0() {
   let config = configRepository.load();
   if (!("lastDayOpened" in config)) {
-    config["lastDayOpened"] = moment().format("YYYY-MM-DD");
+    config["lastDayOpened"] = todayId();
+    configRepository.update(config);
+  }
+}
+
+function calendarSystems() {
+  let config = configRepository.load();
+  if (!("calendarSystem" in config)) {
+    config["calendarSystem"] = "gregory";
+    config["weekStart"] = config["weekStartOnMonday"] === false ? 0 : 1;
+    delete config["weekStartOnMonday"];
     configRepository.update(config);
   }
 }

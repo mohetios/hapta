@@ -45,6 +45,12 @@
               </button>
             </li>
             <li class="nav-item" role="presentation">
+              <button class="nav-link" id="config-region-tab" data-bs-toggle="tab" data-bs-target="#config-region"
+                role="tab">
+                Region
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
               <button class="nav-link" id="config-behavior-tab" data-bs-toggle="tab" data-bs-target="#config-behavior"
                 role="tab">
                 Behavior
@@ -109,12 +115,6 @@
                   }}</label>
                   <input class="form-check-input" type="checkbox" id="moveOldTasks" v-model="configData.moveOldTasks"
                     @change="changeConfig('moveOldTasks', configData.moveOldTasks)" />
-                </div>
-                <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between">
-                  <label class="form-check-label flex-fill" for="weekStartOnMonday">{{ $t("settings.weekStartOnMonday")
-                  }}</label>
-                  <input class="form-check-input" type="checkbox" id="weekStartOnMonday" v-model="configData.weekStartOnMonday"
-                    @change="changeConfig('weekStartOnMonday', configData.weekStartOnMonday)" />
                 </div>
                 <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between">
                   <label class="form-check-label flex-fill" for="moveOldTasks">{{ $t("settings.startCalendarYesterday")
@@ -212,7 +212,7 @@
             <div class="tab-pane fade" id="config-notifications">
               <div class="d-flex flex-column mt-3 h-100">
                 <div v-if="isDesktop()" class="orm-check form-switch d-flex px-0 mb-3  justify-content-between">
-                  <label class="form-check-label" style="margin-left: 0px" for="notificationOnStartup">{{
+                  <label class="form-check-label" style="margin-inline-start: 0px" for="notificationOnStartup">{{
                     $t("settings.notificationOnStartup")
                   }}</label>
                   <input class="form-check-input" type="checkbox" id="notificationOnStartup"
@@ -221,7 +221,7 @@
                 </div>
 
                 <div class="form-check form-switch d-flex px-0 mb-3  justify-content-between">
-                  <label class="form-check-label" style="margin-left: 0px" for="notificationIndicator">{{
+                  <label class="form-check-label" style="margin-inline-start: 0px" for="notificationIndicator">{{
                     $t("settings.notificationIndicator")
                   }}</label>
                   <input class="form-check-input" type="checkbox" id="notificationIndicator"
@@ -247,7 +247,7 @@
                     <option value="positive">Positive</option>
                     <option value="metal">Metal</option>
                   </select>
-                  <button class="btn" style="margin-left: 8px" type="button" @click="playSound">
+                  <button class="btn" style="margin-inline-start: 8px" type="button" @click="playSound">
                     <i class="bi-play-circle a"></i>
                   </button>
                 </div>
@@ -296,24 +296,21 @@
                 <label for="language" class="form-label">{{ $t("settings.language") }}:</label>
                 <select id="language" class="col-sm-9 form-select" aria-label="Default select example"
                   v-model="configData.language" @change="setLanguage">
-                  <option value="en">English</option>
-                  <option value="es">Español</option>
-                  <option value="fr">Français</option>
-                  <option value="de">Deutsch</option>
-                  <option value="it">Italiano</option>
-                  <option value="pt">Português</option>
-                  <option value="ru">русский</option>
-                  <option value="hi">हिंदी</option>
-                  <option value="ja">日本</option>
-                  <option value="pl">Polski</option>
-                  <option value="ar">عرب</option>
-                  <option value="ko">한국어</option>
-                  <option value="zh_cn">简体中文</option>
-                  <option value="zh_tw">繁體中文</option>
-                  <option value="uk">український</option>
-                  <option value="tr">Türk</option>
-                  <option value="vi">Tiếng Việt</option>
-                  <option value="he">עִברִית</option>
+                  <option v-for="(lang, key) in languages" :key="key" :value="key">{{ lang.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="config-region">
+              <div class="d-flex flex-column mt-2 h-100">
+                <label for="calendarSystem" class="form-label">{{ $t("settings.calendarSystem") }}:</label>
+                <select id="calendarSystem" class="form-select mb-3" v-model="configData.calendarSystem"
+                  @change="changeConfig('calendarSystem', configData.calendarSystem)">
+                  <option v-for="cal in calendarSystems" :key="cal" :value="cal">{{ calendarName(cal) }}</option>
+                </select>
+                <label for="weekStart" class="form-label">{{ $t("settings.weekStart") }}:</label>
+                <select id="weekStart" class="form-select" v-model.number="configData.weekStart"
+                  @change="changeConfig('weekStart', configData.weekStart)">
+                  <option v-for="day in [6, 0, 1, 2, 3, 4, 5]" :key="day" :value="day">{{ weekdayName(day || 7) }}</option>
                 </select>
               </div>
             </div>
@@ -336,6 +333,9 @@ import configList from "./configList";
 import notifications from "../helpers/notifications";
 import { Modal } from "bootstrap";
 import desktop from "../helpers/desktop";
+import languageHelper from "../helpers/languageHelper";
+import { languages } from "../assets/languages/languages.js";
+import { calendarSystems, calendarName, weekdayName } from "../helpers/dates";
 
 export default {
   name: "configModal",
@@ -346,6 +346,8 @@ export default {
   data() {
     return {
       configData: this.$store.getters.config,
+      languages,
+      calendarSystems,
     };
   },
   methods: {
@@ -353,7 +355,7 @@ export default {
       this.$nextTick(function () {
         this.$store.commit("updateConfig", { val: val, key: key });
         configRepository.update(this.$store.getters.config);
-        if (key === "language") this.$i18n.locale = this.configData.language;
+        if (key === "language") languageHelper.applyLocale(this.$i18n, this.configData.language);
         if (key === "columns") {
           setTimeout(
             function () {
@@ -414,6 +416,8 @@ export default {
         desktop.setDarkTrayIcon(this.configData.darkTrayIcon);
       });
     },
+    calendarName,
+    weekdayName,
     playSound: function () {
       notifications.playNotificationSound(
         this.$store.getters.config.notificationSound
@@ -442,21 +446,21 @@ export default {
 }
 
 #config-links-menu {
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  border-inline-end: 1px solid rgba(0, 0, 0, 0.06);
 
 .dark-theme & {
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.06);
 }
 }
 
 
 .icons {
   font-size: 18px;
-  margin-right: 5px;
+  margin-inline-end: 5px;
 }
 
 .form-check-label {
-  margin-left: 10px;
+  margin-inline-start: 10px;
   padding-top: 5px;
 }
 

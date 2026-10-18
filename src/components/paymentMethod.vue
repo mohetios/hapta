@@ -33,7 +33,7 @@
   }
 
   .donate-img{
-    margin-right: 14px;
+    margin-inline-end: 14px;
   }
 
   .dark-theme .card {

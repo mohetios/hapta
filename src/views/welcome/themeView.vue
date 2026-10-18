@@ -10,7 +10,7 @@
         <h4> {{ $t('welcome.theme') }}</h4>
         <text> {{ $t('welcome.themeText') }}
         </text>
-        <div style="padding-left: 50px;" class="pt-4">
+        <div style="padding-inline-start: 50px;" class="pt-4">
           <label class="form-check-label"><i class="bi-sun"></i></label>
           <div class="form-check form-switch form-check-inline">
             <input class="form-check-input" type="checkbox" v-model="darkTheme"
@@ -70,13 +70,13 @@ export default {
 }
 
 .bi-sun {
-  margin-right: 40px;
+  margin-inline-end: 40px;
   color: #383a3b;
 }
 
 
 .bi-moon-stars {
-  margin-left: 20px;
+  margin-inline-start: 20px;
   color: #d3d5d8;
 }
 
@@ -101,7 +101,7 @@ export default {
 
 .icon-container {
   margin-top: 20px;
-  margin-left: 20px;
+  margin-inline-start: 20px;
 }
 
 .btn-footer {

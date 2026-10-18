@@ -87,13 +87,13 @@ export default {
 }
 
 .bi-sun {
-  margin-right: 40px;
+  margin-inline-end: 40px;
   color: #383a3b;
 }
 
 
 .bi-moon-stars {
-  margin-left: 20px;
+  margin-inline-start: 20px;
   color: #d3d5d8;
 }
 
@@ -114,7 +114,7 @@ export default {
 
 .icon-container {
   margin-top: 20px;
-  margin-left: 20px;
+  margin-inline-start: 20px;
 }
 
 .btn-footer {

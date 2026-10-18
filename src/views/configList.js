@@ -32,6 +32,12 @@ export default {
               link: "config-data-tab",
             },
             {
+              name: vue.$t('settings.region'),
+              ico: "bi-calendar3",
+              linktype: "tagId",
+              link: "config-region-tab",
+            },
+            {
               name: vue.$t('settings.language'),
               ico: "bi-globe2",
               linktype: "tagId",

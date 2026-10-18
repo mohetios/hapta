@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <div class="d-flex flex-row">
-            <i :class="ico" class="main-icon" style="font-size: 38px; margin-right: 30px"></i>
+            <i :class="ico" class="main-icon" style="font-size: 38px; margin-inline-end: 30px"></i>
             <div style="margin-top: 2px">
               <h6 class="modal-title">{{ title }}</h6>
               <text class="modal-title" style="font-size: 0.9rem">

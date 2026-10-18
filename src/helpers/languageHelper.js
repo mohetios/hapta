@@ -1,64 +1,23 @@
-import { es, enUS, fr, pt, ru, zhCN, de, it, ar, pl, zhTW, ja, tr, uk, ko, hi, vi, he } from "date-fns/locale";
+import { languages, defaultLocale } from "../assets/languages/languages.js";
+import bootstrapLtr from "bootstrap/dist/css/bootstrap.min.css?url";
+import bootstrapRtl from "bootstrap/dist/css/bootstrap.rtl.min.css?url";
+
+const bootstrapLink = document.createElement("link");
+bootstrapLink.rel = "stylesheet";
+// First in <head> so app styles keep overriding Bootstrap
+document.head.prepend(bootstrapLink);
 
 export default {
-  getLanguagePack(lang) {
-    let return_lang = null;
-    switch (lang) {
-      case "es":
-        return_lang = es;
-        break;
-      case "en":
-        return_lang = enUS;
-        break;
-      case "fr":
-        return_lang = fr;
-        break;
-      case "pt":
-        return_lang = pt;
-        break;
-      case "it":
-        return_lang = it;
-        break;
-      case "ar":
-        return_lang = ar;
-        break;
-      case "pl":
-        return_lang = pl;
-        break;
-      case "ru":
-        return_lang = ru;
-        break;
-      case "zh_cn":
-        return_lang = zhCN;
-        break;
-      case "zh_tw":
-        return_lang = zhTW;
-        break;
-      case "de":
-        return_lang = de;
-        break;
-      case "ja":
-        return_lang = ja;
-        break;
-      case "tr":
-        return_lang = tr;
-        break;
-      case "uk":
-        return_lang = uk;
-        break;
-      case "ko":
-        return_lang = ko;
-        break;
-      case "hi":
-        return_lang = hi;
-        break;
-      case "vi":
-        return_lang = vi;
-        break;
-      case "he":
-        return_lang = he;
-        break;
-    }
-    return return_lang;
+  // Single entry point for switching language: messages, <html lang dir>, Bootstrap LTR/RTL build
+  applyLocale(i18n, lang) {
+    const language = languages[lang] ?? languages[defaultLocale];
+    i18n.locale = lang in languages ? lang : defaultLocale;
+    document.documentElement.lang = language.intl;
+    document.documentElement.dir = language.dir;
+    const href = language.dir === "rtl" ? bootstrapRtl : bootstrapLtr;
+    if (bootstrapLink.getAttribute("href") !== href) bootstrapLink.href = href;
+  },
+  dir(lang) {
+    return languages[lang]?.dir ?? "ltr";
   },
 };

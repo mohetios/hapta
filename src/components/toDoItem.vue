@@ -32,7 +32,7 @@
 
 <script>
 import toDoListRepository from "../repositories/toDoListRepository";
-import moment from "moment";
+import { formatTime } from "../helpers/dates";
 import linkifyStr from 'linkify-string';
 
 export default {
@@ -79,11 +79,7 @@ export default {
     onDragleave: function () {
       this.todoDragHover = false;
     },
-    timeFormat: function (date) {
-      if (date) {
-        return moment(date, "HH:mm").format("hh:mm a");
-      }
-    },
+    timeFormat: formatTime,
     showToDoItem: function () {
       var activeTodo = {
         toDo: this.toDo,
@@ -181,7 +177,7 @@ export default {
 .time-details {
   opacity: 0.6;
   display: inline;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 .checked-todo {
@@ -236,7 +232,7 @@ export default {
     width: 14px;
     min-height: 14px;
     height: 14px;
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
 
   label {
@@ -251,7 +247,7 @@ export default {
 
 .cicle-icon {
   font-size: 10px;
-  margin-right: 5px;
+  margin-inline-end: 5px;
 }
 
 .bi-check-circle-fill,

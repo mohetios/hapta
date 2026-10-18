@@ -9,7 +9,7 @@
         </div>
         <div class="modal-body d-flex">
           <div style="margin: 5px">
-            <i class="bi-info-circle" style="font-size: 38px; margin-right: 30px; "></i>
+            <i class="bi-info-circle" style="font-size: 38px; margin-inline-end: 30px; "></i>
           </div>
           <div style="margin-top: 9px">
             {{tips[index].text}}

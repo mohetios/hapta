@@ -94,7 +94,7 @@ export default {
     font-size: 20px;
     margin-top: -50px;
     position: absolute;
-    right: 10px;
+    inset-inline-end: 10px;
     bottom: 5px;
     opacity: 0.3;
     cursor: pointer;

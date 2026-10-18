@@ -5,10 +5,10 @@
     <div style="flex-grow: 1" class="noselect">
       <div v-if="!customTodoList">
         <h4 :class="{ 'today-date': is_today }">
-          {{ moments(id).locale(language).format("dddd") }}
+          {{ format(id, { weekday: "long" }) }}
         </h4>
         <span class="weekly-to-do-subheader">
-          {{ moments(id).locale(language).format("LL") }}
+          {{ format(id, { year: "numeric", month: "long", day: "numeric" }) }}
         </span>
       </div>
       <div v-else>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import { format, addDays, todayId } from "../helpers/dates";
 import toDoListRepository from "../repositories/toDoListRepository";
 import customToDoListIdsRepository from "../repositories/customToDoListIdsRepository";
 import notifications from "../helpers/notifications";
@@ -104,7 +104,7 @@ export default {
       this.updateTodoList(this.id, this.$store.getters.todoLists[this.id]);
     },
     moveUndoneItems: function () {
-      let towmorrow_id = this.moments(this.id).add(1, "d").format("YYYYMMDD");
+      let towmorrow_id = addDays(this.id, 1);
       this.$store.commit("moveUndoneItems", {
         origenId: this.id,
         destinyId: towmorrow_id,
@@ -118,9 +118,7 @@ export default {
       }
 
     },
-    moments: function (date) {
-      return moment(date);
-    },
+    format,
     updateTodoList: function (todoListId, TodoList) {
       notifications.refreshDayNotifications(this, todoListId);
       toDoListRepository.update(todoListId, TodoList);
@@ -190,13 +188,10 @@ export default {
   },
   computed: {
     is_today: function () {
-      return moment().format("YYYYMMDD") == this.id;
+      return todayId() == this.id;
     },
     todo_list_name: function () {
       return this.$store.getters.cTodoListIds[this.cTodoListIndex].listName;
-    },
-    language: function () {
-      return this.$store.getters.config.language;
     },
   },
 };
@@ -295,7 +290,7 @@ export default {
 
   i {
     font-size: 0.99rem;
-    margin-right: 11px;
+    margin-inline-end: 11px;
     display: inline-block;
   }
 }

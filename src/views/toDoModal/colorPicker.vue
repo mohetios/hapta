@@ -78,12 +78,12 @@ export default {
 @import "/src/assets/style/globalVars.scss";
 
 .header-menu-icons {
-  margin-left: 6px;
+  margin-inline-start: 6px;
   @include btn-icon;
 }
 
 .colors-menu-icons {
-  margin-left: 1px;
+  margin-inline-start: 1px;
   @include btn-icon;
 }
 
@@ -91,7 +91,7 @@ export default {
   min-width: 7rem;
 
   i {
-    margin-right: 0px;
+    margin-inline-end: 0px;
   }
 }
 </style>

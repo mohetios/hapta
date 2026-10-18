@@ -52,7 +52,7 @@
   }
 
   .bi-sun {
-    margin-right: 15px;
+    margin-inline-end: 15px;
   }
 
   .form-check-label i {
@@ -76,7 +76,7 @@
 
   .icon-container {
     margin-top: 20px;
-    margin-left: 20px;
+    margin-inline-start: 20px;
   }
 
   .btn-footer {
@@ -94,7 +94,7 @@
   }
 
   .sub-header i {
-    margin-left: 5px;
+    margin-inline-start: 5px;
   }
 
 

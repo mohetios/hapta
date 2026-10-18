@@ -43,7 +43,10 @@
     "moveCompletedTaskToBottom": "Move completed tasks to bottom",
     "moveCompletedSubTaskToBottom": "Move completed sub-tasks to bottom",
     "fullscreenToDoModal": "To-do Details in full screen",
-    "weekStartOnMonday": "The Week start on Monday"
+    "weekStartOnMonday": "The Week start on Monday",
+    "region": "Calendar & Region",
+    "calendarSystem": "Calendar system",
+    "weekStart": "Week starts on"
   },
   "donate": {
     "contribute": "Contribute",

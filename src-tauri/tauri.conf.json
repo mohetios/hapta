@@ -5,9 +5,9 @@
   "version": "../package.json",
   "identifier": "com.mohetios.hapta",
   "build": {
-    "beforeDevCommand": "yarn serve",
+    "beforeDevCommand": "pnpm serve",
     "devUrl": "http://localhost:8080",
-    "beforeBuildCommand": "yarn build",
+    "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
   "app": {

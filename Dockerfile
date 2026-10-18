@@ -1,8 +1,8 @@
 FROM node:24-alpine
 WORKDIR /app
-COPY package.json /app
-COPY yarn.lock /app
-RUN yarn install --frozen-lockfile && yarn cache clean
+RUN corepack enable
+COPY package.json pnpm-lock.yaml /app/
+RUN pnpm install --frozen-lockfile && pnpm store prune
 COPY . /app
-CMD yarn run serve --host
+CMD pnpm serve --host
 EXPOSE 8080

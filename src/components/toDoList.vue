@@ -1,6 +1,6 @@
 <template>
   <div :id="'list' + id" class="to-do-list-container d-flex flex-column" ref="listContainer" :class="{
-    'old-date': !customTodoList && moments(id).isBefore(Date(), 'day'),
+    'old-date': !customTodoList && isPast(id),
   }" :style="`flex: 0 0 ${100 / columns}%;`">
     <div v-if="loading" class="loading-spinner">
       <div class="spinner-border" role="status">
@@ -31,7 +31,7 @@
 
 <script>
 import toDoItem from "./toDoItem";
-import moment from "moment";
+import { isPast } from "../helpers/dates";
 import toDoListRepository from "../repositories/toDoListRepository";
 import listHeader from "./listHeader";
 import notifications from "../helpers/notifications";
@@ -102,9 +102,7 @@ export default {
     cancelAdd: function () {
       this.newToDo.text = "";
     },
-    moments: function (date) {
-      return moment(date);
-    },
+    isPast,
     onDrop: function (event, list, new_index) {
       let toDo = JSON.parse(event.dataTransfer.getData("item"));
       let index = event.dataTransfer.getData("index");
@@ -206,8 +204,8 @@ export default {
 }
 
 .to-do-list-container {
-  padding-left: 13px;
-  padding-right: 13px;
+  padding-inline-start: 13px;
+  padding-inline-end: 13px;
   scroll-snap-align: start;
   margin-bottom: 5px;
 }

@@ -153,7 +153,7 @@
 
 <script>
 import toDoList from "./components/toDoList";
-import moment from "moment";
+import { todayId, addDays, diffDays, msUntilMidnight } from "./helpers/dates";
 import sideBar from "./components/layout/sideBar";
 import customToDoListIdsRepository from "./repositories/customToDoListIdsRepository";
 import removeCustomList from "./components/comfirmModals/removeCustomList";
@@ -181,6 +181,7 @@ import ReorderCustomListsModal from "./views/ReorderCustomListsModal.vue";
 import toastMessage from "./components/toastMessage";
 import activeToDo from "./components/activeToDo.vue";
 import tasksHelper from "./helpers/tasksHelper";
+import languageHelper from "./helpers/languageHelper";
 
 export default {
   name: "App",
@@ -214,17 +215,15 @@ export default {
     };
   },
   beforeCreate() {
-    let config = configRepository.load();
-    if (version != config.version) {
-      migrations.migrate();
-    }
+    // Every migration is idempotent; run them all so new keys never depend on a version bump
+    migrations.migrate();
 
     if (Notification.permission !== "denied") {
       Notification.requestPermission();
     }
     this.$store.commit("loadCustomTodoListsIds", customToDoListIdsRepository.load());
     this.$store.commit("loadConfig", configRepository.load());
-    this.$i18n.locale = this.$store.getters.config.language;
+    languageHelper.applyLocale(this.$i18n, this.$store.getters.config.language);
 
     this.$store.dispatch("loadAllRepeatingEvent").then(
       function () {
@@ -232,7 +231,7 @@ export default {
         let totalCustomListCount = this.$store.getters.cTodoListIds.length;
         this.initialListToLoad = totalDaysCount + totalCustomListCount;
         this.deleteOldRepeatingEvents();
-        this.selected_date = moment().format("YYYYMMDD");
+        this.selected_date = todayId();
         this.$nextTick(() => {
           this.weekResetScroll();
         });
@@ -241,7 +240,7 @@ export default {
     );
   },
   mounted() {
-    this.$refs.weekListContainer.scrollLeft = this.todoListWidth();
+    this.weekResetScroll();
     this.calendarHeight = this.$store.getters.config.calendarHeight;
     window.addEventListener("resize", this.weekResetScroll);
     document.onreadystatechange = () => {
@@ -267,40 +266,46 @@ export default {
   },
   methods: {
     weekMoveLeft: function () {
-      this.selected_date = moment(this.selected_date).subtract(1, "d").format("YYYYMMDD");
-      this.$refs.weekListContainer.scrollLeft = this.todoListWidth() * 2;
+      this.selected_date = addDays(this.selected_date, -1);
+      this.$refs.weekListContainer.scrollLeft = this.todoListWidth() * 2 * this.scrollSign();
       this.$refs.weekListContainer.scroll({
-        left: this.$refs.weekListContainer.scrollLeft - this.todoListWidth(),
+        left: this.$refs.weekListContainer.scrollLeft - this.todoListWidth() * this.scrollSign(),
         top: 0,
         behavior: "smooth",
       });
     },
     weekMoveRight: function () {
-      this.selected_date = moment(this.selected_date).add(1, "d").format("YYYYMMDD");
+      this.selected_date = addDays(this.selected_date, 1);
       this.$refs.weekListContainer.scrollLeft = 0;
       this.$refs.weekListContainer.scroll({
-        left: this.$refs.weekListContainer.scrollLeft + this.todoListWidth(),
+        left: this.$refs.weekListContainer.scrollLeft + this.todoListWidth() * this.scrollSign(),
         top: 0,
         behavior: "smooth",
       });
     },
     deleteOldRepeatingEvents: function () {
       for (const event of Object.entries(this.$store.getters.repeatingEventList)) {
-        if (moment(event[1].end_date).isBefore(moment())) {
+        // end_date may be a Date or a legacy serialized moment ({ _d: Date })
+        if (new Date(event[1].end_date?._d ?? event[1].end_date) < new Date()) {
           repeatingEventRepository.remove(event[0]);
           this.$store.commit("removeRepeatingEvent", event[0]);
         }
       }
     },
+    // scrollLeft runs 0 → negative in RTL containers
+    scrollSign: function () {
+      return document.documentElement.dir === "rtl" ? -1 : 1;
+    },
     weekResetScroll: function () {
-      this.$refs.weekListContainer.scrollLeft = this.todoListWidth();
+      this.$refs.weekListContainer.scrollLeft = this.todoListWidth() * this.scrollSign();
     },
     customMoveRight: function () {
       this.$refs.customListContainer.scrollLeft =
-        this.$refs.customListContainer.scrollLeft + this.customTodoListWidth() - 13;
+        this.$refs.customListContainer.scrollLeft + (this.customTodoListWidth() - 13) * this.scrollSign();
     },
     customMoveLeft: function () {
-      this.$refs.customListContainer.scrollLeft = this.$refs.customListContainer.scrollLeft - this.customTodoListWidth();
+      this.$refs.customListContainer.scrollLeft =
+        this.$refs.customListContainer.scrollLeft - this.customTodoListWidth() * this.scrollSign();
     },
     resetCustomList: function () {
       this.$nextTick(function () {
@@ -376,7 +381,7 @@ export default {
       configRepository.update(this.$store.getters.config);
     },
     refreshTodayNotifications: function () {
-      notifications.refreshDayNotifications(this, moment().format("YYYYMMDD"));
+      notifications.refreshDayNotifications(this, todayId());
     },
     todoListMounted: function () {
       this.methodsAfterInitialLoad();
@@ -389,14 +394,14 @@ export default {
           if (this.$store.getters.config.moveOldTasks) {
             this.moveOldTasksToToday().then(() => {
               this.refreshTodayNotifications();
-              this.$store.commit("updateConfig", { val: moment().format("YYYYMMDD"), key: "lastDayOpened" });
+              this.$store.commit("updateConfig", { val: todayId(), key: "lastDayOpened" });
               configRepository.update(this.$store.getters.config);
               if (desktop.isDesktop()) this.showInitialNotification();
             });
           } else {
             this.refreshTodayNotifications();
             if (desktop.isDesktop()) this.showInitialNotification();
-            this.$store.commit("updateConfig", { val: moment().format("YYYYMMDD"), key: "lastDayOpened" });
+            this.$store.commit("updateConfig", { val: todayId(), key: "lastDayOpened" });
             configRepository.update(this.$store.getters.config);
           }
         }
@@ -424,8 +429,8 @@ export default {
       );
     },
     initialNotificationText: function () {
-      let yesterdayTasks = this.$store.getters.todoLists[moment().subtract(1, "d").format("YYYYMMDD")];
-      let todayTasks = this.$store.getters.todoLists[moment().format("YYYYMMDD")];
+      let yesterdayTasks = this.$store.getters.todoLists[addDays(todayId(), -1)];
+      let todayTasks = this.$store.getters.todoLists[todayId()];
 
       let yesterayPendingTasksCount = taskHelper.pendingTasksCount(yesterdayTasks);
       let todayPendingTasksCount = taskHelper.pendingTasksCount(todayTasks);
@@ -441,9 +446,7 @@ export default {
       }
     },
     resetAppOnDayChange: function () {
-      var x = new moment();
-      var y = new moment().add(1, "d").startOf("date");
-      var duration = moment.duration(y.diff(x)).asMilliseconds();
+      var duration = msUntilMidnight();
 
       setTimeout(
         function () {
@@ -460,11 +463,11 @@ export default {
     },
     moveOldTasksToToday: async function () {
       var promise = new Promise((resolve) => {
-        var todayListId = moment().format("YYYYMMDD");
-        let daysBefore = moment().diff(moment(this.$store.getters.config.lastDayOpened), "days");
+        var todayListId = todayId();
+        let daysBefore = diffDays(todayListId, this.$store.getters.config.lastDayOpened);
         if (daysBefore == 0) daysBefore = 7;
         for (let i = 1; i <= daysBefore; i++) {
-          let listId = moment().subtract(i, "d").format("YYYYMMDD");
+          let listId = addDays(todayListId, -i);
           this.$store.dispatch("loadTodoLists", listId).then(() => {
             this.$store.commit("moveUndoneItems", { origenId: listId, destinyId: todayListId });
             toDoListRepository.update(listId, this.$store.getters.todoLists[listId]);
@@ -539,19 +542,31 @@ export default {
       desktop.setDarkTrayIcon(this.$store.getters.config.darkTrayIcon);
     },
   },
+  watch: {
+    // Direction flips the scroll origin; re-align the week once the new dir is applied
+    language: function () {
+      this.$nextTick(() => {
+        this.weekResetScroll();
+        this.resetCustomList();
+      });
+    },
+  },
   computed: {
+    language: function () {
+      return this.$store.getters.config.language;
+    },
     dates_array: function () {
       if (!this.selected_date) return [];
-      var dates_array = [moment(this.selected_date).subtract(1, "d").format("YYYYMMDD"), this.selected_date];
+      var dates_array = [addDays(this.selected_date, -1), this.selected_date];
 
       for (let i = 1; i < this.columns; i++) {
-        dates_array.push(moment(this.selected_date).add(i, "d").format("YYYYMMDD"));
+        dates_array.push(addDays(this.selected_date, i));
       }
 
       if (this.$store.getters.config.startCalendarYesterday) {
-        dates_array.unshift(moment(this.selected_date).subtract(2, "d").format("YYYYMMDD"));
+        dates_array.unshift(addDays(this.selected_date, -2));
       } else {
-        dates_array.push(moment(this.selected_date).add(this.columns, "d").format("YYYYMMDD"));
+        dates_array.push(addDays(this.selected_date, this.columns));
       }
 
       this.$store.commit("updateSelectedDates", dates_array);
@@ -640,8 +655,8 @@ body {
   font-size: 2rem;
   align-self: center;
   flex-grow: 0;
-  margin-left: 6px;
-  margin-right: 6px;
+  margin-inline-start: 6px;
+  margin-inline-end: 6px;
   cursor: pointer;
   transition: 0.4s cubic-bezier(0.2, 1, 0.1, 1);
 }
@@ -653,15 +668,6 @@ body {
 
 .slider-btn:active {
   background-color: #dddfe2;
-}
-
-.v3dp__popout {
-  border-radius: 7px !important;
-}
-
-.side-bar .v3dp__popout {
-  margin-left: 72px;
-  margin-top: 0px;
 }
 
 .todo-slider {
@@ -819,7 +825,7 @@ body {
   transition: 0.4s cubic-bezier(0.2, 1, 0.1, 1);
   z-index: 6;
   position: absolute;
-  right: 70px;
+  inset-inline-end: 70px;
   margin-top: -8px;
 }
 

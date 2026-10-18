@@ -64,7 +64,7 @@ export default {
 @import "/src/assets/style/globalVars.scss";
 
 .header-menu-icons {
-  margin-left: 6px;
+  margin-inline-start: 6px;
   @include btn-icon;
 }
 

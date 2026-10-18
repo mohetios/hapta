@@ -51,8 +51,8 @@ i {
   cursor: row-resize;
   display: flex;
   flex-direction: column;
-  margin-left: 40px;
-  margin-right: 40px;
+  margin-inline-start: 40px;
+  margin-inline-end: 40px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   /*padding: 0;*/
@@ -85,8 +85,8 @@ i {
 
 .horizontal-divider {
   display: flex;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-inline-start: 10px;
+  margin-inline-end: 10px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   color: rgba(0, 0, 0, 0.85);
@@ -98,12 +98,6 @@ i {
 
 .dark-theme .horizontal-divider {
   border-top: 1px solid #30363d;
-}
-
-#side-bar-date-picker-input {
-  /*hiding input but it need to be visible to get the focus*/
-  position: fixed;
-  top: -50px;
 }
 
 *::-webkit-scrollbar {
@@ -140,26 +134,6 @@ i {
 .modal-footer {
   border-top: none;
   padding: 0.2rem;
-}
-
-.dark-theme .v3dp__popout {
-  background-color: #21262d !important;
-  border: 1px solid #30363d !important;
-  color: #c9d1d9 !important;
-  box-shadow: none !important;
-}
-
-.dark-theme button.v3dp__heading__center:hover,
-.dark-theme .v3dp__heading__button:not(:disabled):hover {
-  background-color: #2e353d !important;
-}
-
-.v3dp__elements button.selected span {
-  background-color: #3f377e !important;
-}
-
-.v3dp__elements button:not(:disabled):hover span {
-  background-color: #3f377e !important;
 }
 
 .dark-theme .form-switch .form-check-input:not(:checked) {
@@ -258,7 +232,8 @@ i {
 }
 
 #todo-date-picker-input {
-  width: 90px;
+  padding-inline-end: 10px;
+  white-space: nowrap;
   border: none;
   background-color: unset;
   color: $btn-color;
@@ -279,15 +254,6 @@ i {
   }
 }
 
-.todo-list-selector .v3dp__popout {
-  margin-top: 10px;
-  margin-left: -30px;
-}
-
-/*#todo-date-picker-input:focus {*/
-/*    outline: unset;*/
-/*}*/
-
 .todo-description p {
   white-space: pre-wrap;
   line-height: 21px;
@@ -295,7 +261,7 @@ i {
 
 .alarm-indicator {
   display: inline-block;
-  margin-left: -2px;
+  margin-inline-start: -2px;
   margin-bottom: 9px;
   width: 4px;
   height: 4px;
@@ -418,5 +384,26 @@ i {
 @media only screen and (min-width: 601px) {
   .mobile {
     display: none !important;
+  }
+}
+
+/*-------------RTL----------------*/
+
+/* Vazirmatn for Arabic-script UI; Hebrew glyphs fall through to the system font */
+[dir="rtl"] {
+  --bs-body-font-family: Vazirmatn, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", sans-serif;
+}
+
+/* Direction-meaning icons point the other way in RTL (bootstrap-icons ::before is inline-block) */
+[dir="rtl"] {
+  .bi-chevron-left,
+  .bi-chevron-right,
+  .bi-chevron-double-left,
+  .bi-chevron-double-right,
+  .bi-arrow-left,
+  .bi-arrow-right {
+    &::before {
+      transform: scaleX(-1);
+    }
   }
 }

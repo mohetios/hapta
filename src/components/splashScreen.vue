@@ -150,7 +150,7 @@ export default {
 }
 
 .logo {
-  margin-right: 15px;
+  margin-inline-end: 15px;
   width: 25rem;
 }
 

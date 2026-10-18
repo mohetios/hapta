@@ -62,7 +62,7 @@
   }
 
   .bi-files {
-    margin-left: 5px;
+    margin-inline-start: 5px;
   }
 
   .form-control[readonly] {

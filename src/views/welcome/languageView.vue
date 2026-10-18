@@ -16,24 +16,7 @@
             v-model="language"
             @change="changeLanguage"
           >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="it">Italiano</option>
-            <option value="pt">Português</option>
-            <option value="ru">русский</option>
-            <option value="hi">हिंदी</option>
-            <option value="ja">日本</option>
-            <option value="pl">Polski</option>
-            <option value="ar">عرب</option>
-            <option value="ko">한국어</option>
-            <option value="zh_cn">简体中文</option>
-            <option value="zh_tw">繁體中文</option>
-            <option value="uk">український</option>
-            <option value="tr">Türk</option>
-            <option value="vi">Tiếng Việt</option>
-            <option value="he">עִברִית</option>
+            <option v-for="(lang, key) in languages" :key="key" :value="key">{{ lang.name }}</option>
           </select>
         </div>
       </div>
@@ -52,6 +35,9 @@
 
 <script>
 import configRepository from "../../repositories/configRepository";
+import languageHelper from "../../helpers/languageHelper";
+import { languages } from "../../assets/languages/languages.js";
+import { defaultCalendarFor, defaultWeekStartFor } from "../../helpers/dates";
 import desktop from "../../helpers/desktop";
 
 export default {
@@ -59,14 +45,18 @@ export default {
   data() {
     return {
       language: this.$store.getters.config.language,
+      languages,
     };
   },
   methods: {
     changeLanguage: function () {
       this.$nextTick(function () {
         this.$store.commit("updateConfig", { val: this.language, key: "language" });
+        // First run: follow the language's regional calendar, e.g. fa -> Persian, Saturday
+        this.$store.commit("updateConfig", { val: defaultCalendarFor(this.language), key: "calendarSystem" });
+        this.$store.commit("updateConfig", { val: defaultWeekStartFor(this.language), key: "weekStart" });
         configRepository.update(this.$store.getters.config);
-        this.$i18n.locale = this.language;
+        languageHelper.applyLocale(this.$i18n, this.language);
 
         if (desktop.isDesktop()) {
           desktop.setTrayContextMenuLabel({ open: this.$t("ui.open"), quit: this.$t("ui.quit") });
@@ -83,7 +73,7 @@ export default {
 <style scoped>
 .info-image {
   margin-top: 20px;
-  margin-left: 10px;
+  margin-inline-start: 10px;
 }
 
 .btn-footer {
