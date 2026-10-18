@@ -1,6 +1,6 @@
 # Hapta | هَپتا
 
-[![Build](https://github.com/mohetios/Hapta/actions/workflows/release.yml/badge.svg)](https://github.com/mohetios/Hapta/actions/workflows/release.yml)
+[![Build](https://github.com/mohetios/hapta/actions/workflows/release.yml/badge.svg)](https://github.com/mohetios/hapta/actions/workflows/release.yml)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 
 **Hapta** is a minimalist, privacy-focused weekly planner for Persian speakers, built on top of [WeekToDo](https://github.com/manuelernestog/weektodo).
@@ -26,16 +26,16 @@ Persian / Jalali work starts once this baseline is stable.
 
 ## Download
 
-Builds from `main` are attached to each [Actions run](https://github.com/mohetios/Hapta/actions) as artifacts.
-Tagged versions (`v*`) are published on the [Releases](https://github.com/mohetios/Hapta/releases) page.
+Builds from `main` are attached to each [Actions run](https://github.com/mohetios/hapta/actions) as artifacts.
+Tagged versions (`v*`) are published on the [Releases](https://github.com/mohetios/hapta/releases) page.
 
 ## Build from source
 
 Requires Node.js 16 and Yarn (webpack 4 doesn't work on Node 17+).
 
 ```bash
-git clone https://github.com/mohetios/Hapta
-cd Hapta
+git clone https://github.com/mohetios/hapta
+cd hapta
 yarn install
 yarn serve            # web version
 yarn electron:serve   # desktop version
