@@ -39,7 +39,7 @@ export default {
         } else {
           toast.show();
         }
-      } catch (e) {
+      } catch {
         toast.show();
       }
     };

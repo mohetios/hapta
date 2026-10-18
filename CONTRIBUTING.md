@@ -27,7 +27,7 @@ If you want to understand how Hapta works or want to debug an issue, you'll want
 
 ## Installing Prerequisites
 
-You'll need git, a recent version of [Node.JS](https://nodejs.org/en/) (currently v16.X is recommended), [Yarn](https://yarnpkg.com/), and [Rust with the Tauri prerequisites](https://v2.tauri.app/start/prerequisites/).
+You'll need git, [Node.JS](https://nodejs.org/en/) 22 or newer, [Yarn](https://yarnpkg.com/), and [Rust with the Tauri prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 ```
 git clone https://github.com/mohetios/hapta

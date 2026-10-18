@@ -60,7 +60,7 @@ Every push to `main` also publishes its own release, tagged `v<version>-build.<r
 
 ## Build from source
 
-Requires Node.js 16 and Yarn (webpack 4 doesn't work on Node 17+), plus Rust and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for the desktop app.
+Requires Node.js 22+ and Yarn, plus Rust and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for the desktop app.
 
 ```bash
 git clone https://github.com/mohetios/hapta

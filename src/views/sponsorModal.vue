@@ -46,14 +46,13 @@
         methods: {
             loadSponsors: function () {
                 if (this.sponsorsList.length == 0) {
-                    const axios = require('axios').default;
-                    axios.get('https://support.weektodo.me/data/sponsors.json')
-                        .then(response => (this.renderSponsors(response)))
+                    fetch('https://support.weektodo.me/data/sponsors.json')
+                        .then(response => response.json())
+                        .then(data => this.renderSponsors(data))
                         .catch(error => console.log(error.message))
                 }
             },
-            renderSponsors: function (response) {
-                var data = response.data;
+            renderSponsors: function (data) {
                 data.sort(function (a, b) {
                     if (a.contribution < b.contribution) {
                         return 1;

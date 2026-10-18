@@ -1,5 +1,5 @@
 import storageRepository from "./storageRepository";
-import version_json from "../../public/version.json";
+import { version } from "../../package.json";
 import moment from "moment";
 
 export default {
@@ -14,7 +14,7 @@ export default {
         calendar: true,
         firstTimeOpen: true,
         language: "en",
-        version: version_json.version,
+        version: version,
         checkUpdates: true,
         columns: 5,
         customColumns: 5,

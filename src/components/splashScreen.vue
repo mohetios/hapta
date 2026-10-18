@@ -11,14 +11,14 @@
           <img
             v-if="darkTheme"
             class="logo"
-            src="../../public/img/weektodo-isologo-white.svg"
+            src="/img/weektodo-isologo-white.svg"
             alt="Hapta Logo"
             style="display: inline"
           />
           <img
             v-else
             class="logo"
-            src="../../public/img/weektodo-isologo-color.svg"
+            src="/img/weektodo-isologo-color.svg"
             alt="Hapta Logo"
             style="display: inline"
           />
@@ -51,17 +51,16 @@ export default {
     };
   },
   mounted() {
-    const axios = require("axios").default;
-    axios
-      .get("https://weektodo.me/api/sponsors")
-      .then((response) => this.renderSponsor(response))
+    fetch("https://weektodo.me/api/sponsors")
+      .then((response) => response.json())
+      .then((data) => this.renderSponsor(data))
       .catch((error) => console.log(error.message));
   },
   methods: {
     hideSplash: function () {
       this.show = false;
     },
-    renderSponsor: function (response) {
+    renderSponsor: function (data) {
       var sponsors = [];
 
       sponsors.push({
@@ -71,23 +70,23 @@ export default {
         img: "/icons/ko-fi.png",
       });
 
-      response.data.bronze.forEach(function (obj) {
+      data.bronze.forEach(function (obj) {
         sponsors.push(obj);
       });
 
-      response.data.silver.forEach(function (obj) {
+      data.silver.forEach(function (obj) {
         for (let i = 0; i < 3; i++) {
           sponsors.push(obj);
         }
       });
 
-      response.data.golden.forEach(function (obj) {
+      data.golden.forEach(function (obj) {
         for (let i = 0; i < 7; i++) {
           sponsors.push(obj);
         }
       });
 
-      response.data.diamond.forEach(function (obj) {
+      data.diamond.forEach(function (obj) {
         for (let i = 0; i < 15; i++) {
           sponsors.push(obj);
         }

@@ -1,7 +1,6 @@
 // Bridge to the Tauri shell (src-tauri). Only openExternal works in the web build,
 // guard everything else with isDesktop().
-// Uses the API Tauri injects (app.withGlobalTauri) instead of bundling @tauri-apps/*:
-// webpack 4's minifier breaks those packages.
+// Uses the API Tauri injects (app.withGlobalTauri) instead of bundling @tauri-apps/*.
 const tauri = () => window.__TAURI__;
 
 export default {

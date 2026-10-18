@@ -55,7 +55,7 @@
                   <div class="col-md-3">
                     <img
                       class="align-self-center"
-                      src="Avatar.webp"
+                      src="/Avatar.webp"
                       alt="Manuel Ernesto Garcia"
                       title="Manuel Ernesto Garcia"
                       width="64"
@@ -103,13 +103,13 @@
 </template>
 
 <script>
-import version_json from "../../public/version.json";
+import { version } from "../../package.json";
 
 export default {
   name: "aboutModal",
   data() {
     return {
-      version: version_json.version,
+      version: version,
     };
   },
 };

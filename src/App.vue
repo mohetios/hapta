@@ -101,8 +101,8 @@
         </div>
 
         <div v-show="!showCustomList && !showCalendar" style="margin: auto">
-          <img v-if="darkTheme" src="img/WeekToDoDarkLogo.webp" />
-          <img v-else src="img/WeekToDoLightLogo.webp" />
+          <img v-if="darkTheme" src="/img/WeekToDoDarkLogo.webp" />
+          <img v-else src="/img/WeekToDoLightLogo.webp" />
         </div>
       </div>
 
@@ -167,7 +167,7 @@ import toDoModal from "./views/toDoModal/toDoModal";
 import tipsModal from "./views/tipsModal";
 import { Modal, Toast } from "bootstrap";
 import migrations from "./migrations/migrations";
-import version_json from "../public/version.json";
+import { version } from "../package.json";
 import desktop from "./helpers/desktop";
 import taskHelper from "./helpers/tasksHelper";
 import notifications from "./helpers/notifications";
@@ -215,7 +215,7 @@ export default {
   },
   beforeCreate() {
     let config = configRepository.load();
-    if (version_json.version != config.version) {
+    if (version != config.version) {
       migrations.migrate();
     }
 
@@ -495,8 +495,8 @@ export default {
       });
     },
     checkVersion: function () {
-      if (version_json.version != this.$store.getters.config.version) {
-        this.$store.commit("updateConfig", { val: version_json.version, key: "version" });
+      if (version != this.$store.getters.config.version) {
+        this.$store.commit("updateConfig", { val: version, key: "version" });
         configRepository.update(this.$store.getters.config);
         var toast = new Toast(document.getElementById("versionChanges"));
         toast.show();
@@ -504,10 +504,9 @@ export default {
     },
     checkForUpdates: function () {
       if (desktop.isDesktop() && this.$store.getters.config.checkUpdates) {
-        const axios = require("axios").default;
-        axios
-          .get("https://app.weektodo.me/version.json")
-          .then((response) => this.showNewVersionToast(response))
+        fetch("https://app.weektodo.me/version.json")
+          .then((response) => response.json())
+          .then((data) => this.showNewVersionToast(data))
           .catch((error) => console.log(error.message));
       }
     },
@@ -521,8 +520,8 @@ export default {
         this.checkVersion();
       }
     },
-    showNewVersionToast: function (response) {
-      if (response.data.version != version_json.version) {
+    showNewVersionToast: function (data) {
+      if (data.version != version) {
         var toast = new Toast(document.getElementById("newVersionAvailable"));
         toast.show();
       }

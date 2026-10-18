@@ -100,12 +100,6 @@
                     v-model="configData.runInBackground" @change="setRunInBackground()" />
                 </div>
 
-                <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between">
-                  <label class="form-check-label flex-fill" for="reportErrors">{{ $t("settings.reportErrors")
-                  }}</label>
-                  <input class="form-check-input" type="checkbox" id="reportErrors" v-model="configData.reportErrors"
-                    @change="setSendErrors()" />
-                </div>
               </div>
             </div>
             <div class="tab-pane fade" id="config-behavior">
@@ -413,9 +407,6 @@ export default {
           desktop.setTrayContextMenuLabel({ open: this.$t("ui.open"), quit: this.$t("ui.quit") });
         }
       });
-    },
-    setSendErrors: function () {
-      this.changeConfig('reportErrors', this.configData.reportErrors);
     },
     setDarkTrayIcon: function () {
       this.changeConfig('darkTrayIcon', this.configData.darkTrayIcon);
