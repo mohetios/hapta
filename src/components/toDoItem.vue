@@ -92,14 +92,16 @@ export default {
 
       const activeTodoItem = document.getElementById("todo-item-active");
       this.$nextTick(function () {
+        // Rect is in zoomed px, but styles set inside the zoomed .app-body get zoomed again
+        const zoom = this.$store.getters.config.zoom / 100;
         const bounding = this.$refs.itemContainer.getBoundingClientRect();
-        activeTodoItem.style.width = `${bounding.width}px`;
-        activeTodoItem.style.top = `${bounding.y}px`;
-        activeTodoItem.style.left = `${bounding.x}px`;
+        activeTodoItem.style.width = `${bounding.width / zoom}px`;
+        activeTodoItem.style.top = `${bounding.y / zoom}px`;
+        activeTodoItem.style.left = `${bounding.x / zoom}px`;
         activeTodoItem.style.display = `block`;
         const margin_bottom = 10;
-        var offset = parseInt(window.innerHeight) - (parseInt(bounding.y) + parseInt(activeTodoItem.offsetHeight)) - margin_bottom;
-        if (offset < 0) activeTodoItem.style.top = `${bounding.y + offset}px`;
+        var offset = window.innerHeight - (bounding.y + activeTodoItem.offsetHeight * zoom) - margin_bottom;
+        if (offset < 0) activeTodoItem.style.top = `${(bounding.y + offset) / zoom}px`;
       });
     },
   },

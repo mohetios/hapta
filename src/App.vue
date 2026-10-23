@@ -1,6 +1,7 @@
 <template>
   <input class="hidden-input-for-focus" type="text" />
-  <div v-show="compatible" id="app-container" class="app-container" :class="{ 'dark-theme': darkTheme }">
+  <div v-show="compatible" id="app-container" class="app-container" :class="{ 'dark-theme': darkTheme }"
+    :data-bs-theme="darkTheme ? 'dark' : 'light'">
     <div class="hidden-mobile app-body" :style="{ zoom: `${zoom}%` }">
       <splash-screen ref="splash"></splash-screen>
       <side-bar @change-date="setSelectedDate"></side-bar>
@@ -507,7 +508,7 @@ export default {
     },
     checkForUpdates: function () {
       if (desktop.isDesktop() && this.$store.getters.config.checkUpdates) {
-        fetch("https://app.weektodo.me/version.json")
+        fetch("https://api.github.com/repos/mohetios/hapta/releases/latest")
           .then((response) => response.json())
           .then((data) => this.showNewVersionToast(data))
           .catch((error) => console.log(error.message));
@@ -524,16 +525,16 @@ export default {
       }
     },
     showNewVersionToast: function (data) {
-      if (data.version != version) {
+      if (data.tag_name && data.tag_name.replace(/^v/, "") != version) {
         var toast = new Toast(document.getElementById("newVersionAvailable"));
         toast.show();
       }
     },
     downloadNewVersion: function () {
-      desktop.openExternal("https://weektodo.me");
+      desktop.openExternal("https://github.com/mohetios/hapta/releases/latest");
     },
     seeChangeLog: function () {
-      desktop.openExternal("https://weektodo.me/changelog");
+      desktop.openExternal("https://github.com/mohetios/hapta/releases");
     },
     syncDesktopConfig: function () {
       desktop.setTrayContextMenuLabel({ open: this.$t("ui.open"), quit: this.$t("ui.quit") });
@@ -717,6 +718,13 @@ body {
 .dark-theme {
   background-color: #13171d;
   color: #c9d1d9;
+  /* Bootstrap components (modals, forms, tooltips) read these via data-bs-theme */
+  --bs-body-color: #c9d1d9;
+  --bs-body-color-rgb: 201, 209, 217;
+  --bs-emphasis-color: #f7f7f7;
+  --bs-body-bg: #13171d;
+  --bs-border-color: #30363d;
+  --bs-border-color-translucent: #30363d;
 }
 
 .dark-theme input {

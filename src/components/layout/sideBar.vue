@@ -53,11 +53,6 @@
           <hr class="dropdown-divider" />
         </li>
         <li>
-          <a href="https://weektodo.me/support-us" target="_blank" class="dropdown-item" type="button">
-            <i class="bi-gift"></i> <span>{{ $t("donate.supportUs") }}</span>
-          </a>
-        </li>
-        <li>
           <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#aboutModal">
             <i class="bi-info-circle"></i> <span>{{ $t("about.about") }}</span>
           </button>
@@ -65,7 +60,6 @@
       </ul>
     </div>
 
-    <!-- <i class="bi-person-circle" :title="$t('donate.supportUs')" @click="openDonateModal"></i> -->
     <i class="bi-info-square" data-bs-toggle="modal" data-bs-target="#tipsModal" :title="$t('tips.tips')"></i>
     <i
       class="bi-gear"
@@ -83,7 +77,6 @@ import customToDoListIdsRepository from "../../repositories/customToDoListIdsRep
 import toDoListRepository from "../../repositories/toDoListRepository";
 import datePicker from "../datePicker.vue";
 import languageHelper from "../../helpers/languageHelper.js";
-import desktop from "../../helpers/desktop";
 
 export default {
   name: "sideBar",
@@ -117,9 +110,6 @@ export default {
     },
     openConfigModal: function () {
       document.getElementById("config-general-tab").click();
-    },
-    openDonateModal: function () {
-      desktop.openExternal("https://weektodo.me/support-us");
     },
     print: function () {
       window.print();

@@ -76,7 +76,7 @@
     "madeWith": "ساخته شده با",
     "inCuba": "در کوبا",
     "dev": "توسعه‌دهنده و طراح",
-    "devName": "Manuel Ernesto García",
+    "devName": "mohetios",
     "version": "نسخه",
     "desc": "Hapta یک برنامه‌ریز هفتگی مینیمال با تمرکز بر حریم خصوصی است.",
     "site": "مشاهده وب‌سایت",
@@ -85,6 +85,8 @@
     "collaborators": "همکاران",
     "email": "ایمیل",
     "blog": "وبلاگ",
+    "basedOn": "بر پایه WeekToDo اثر Manuel Ernesto García",
+    "sourceCode": "کد منبع",
     "license": "مجوز"
   },
   "generatedData": {
