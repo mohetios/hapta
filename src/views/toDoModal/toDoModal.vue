@@ -157,7 +157,6 @@
 import datePicker from "../../components/datePicker.vue";
 import toDoListRepository from "../../repositories/toDoListRepository";
 import { isDayId, format } from "../../helpers/dates";
-import dbRepository from "../../repositories/dbRepository";
 import { Toast, Modal } from "bootstrap";
 import toastMessage from "../../components/toastMessage";
 import colorPicker from "./colorPicker";
@@ -352,19 +351,11 @@ export default {
       }
     },
     loadToDoFormDB: function (newListID) {
-      let db_req = dbRepository.open();
-      var instancePointer = this;
-      db_req.onsuccess = function (event) {
-        let db = event.target.result;
-        var get_req = dbRepository.get(db, "todo_lists", newListID);
-        get_req.onsuccess = function (event) {
-          let newTodoList = event.target.result ? event.target.result : [];
-          newTodoList.push(instancePointer.todo);
-          instancePointer.todoList = newTodoList;
-          instancePointer.index = newTodoList.length - 1;
-          this.updateTodoList(newListID, instancePointer.todoList);
-        }.bind(this);
-      }.bind(this);
+      let newTodoList = toDoListRepository.get(newListID) ?? [];
+      newTodoList.push(this.todo);
+      this.todoList = newTodoList;
+      this.index = newTodoList.length - 1;
+      this.updateTodoList(newListID, this.todoList);
     },
     removeTodo: function () {
       this.$store.commit("setUndoElement", { type: 'task', todo: this.todo, index: this.index });

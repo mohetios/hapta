@@ -112,6 +112,7 @@
       <clear-data-modal></clear-data-modal>
       <clear-list-modal></clear-list-modal>
       <about-modal></about-modal>
+      <ai-modal></ai-modal>
       <welcome-modal></welcome-modal>
       <tips-modal></tips-modal>
       <to-do-modal :selectedTodo="selectedTodo"></to-do-modal>
@@ -159,6 +160,7 @@ import configModal from "./views/configModal";
 import splashScreen from "./components/splashScreen";
 import configRepository from "./repositories/configRepository";
 import aboutModal from "./views/aboutModal";
+import aiModal from "./views/aiModal.vue";
 import welcomeModal from "./views/welcomeModal";
 import toDoModal from "./views/toDoModal/toDoModal";
 import tipsModal from "./views/tipsModal";
@@ -189,6 +191,7 @@ export default {
     removeCustomList,
     splashScreen,
     aboutModal,
+    aiModal,
     welcomeModal,
     tipsModal,
     toDoModal,

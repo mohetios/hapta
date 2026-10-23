@@ -51,6 +51,12 @@
               </button>
             </li>
             <li class="nav-item" role="presentation">
+              <button class="nav-link" id="config-ai-tab" data-bs-toggle="tab" data-bs-target="#config-ai" role="tab"
+                @click="detectAgentsOnce">
+                AI
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
               <button class="nav-link" id="config-behavior-tab" data-bs-toggle="tab" data-bs-target="#config-behavior"
                 role="tab">
                 Behavior
@@ -268,13 +274,13 @@
                       </button>
                     </div>
                     <div class="small text-muted mt-1">
-                      <template v-if="dataFolder.path">
-                        <bdi class="text-break">{{ dataFolder.path }}</bdi>
-                        <a href="#" class="ms-2" @click.prevent="resetDataFolder">{{ $t("settings.useDefaultFolder") }}</a>
-                      </template>
-                      <template v-else>{{ $t("settings.dataFolderDefault") }}</template>
+                      <bdi class="text-break">{{ dataFolder.folder }}</bdi>
+                      <a v-if="dataFolder.customFolder" href="#" class="ms-2" @click.prevent="resetDataFolder">
+                        {{ $t("settings.useDefaultFolder") }}</a>
                     </div>
-                    <div v-if="dataFolder.error" class="small text-danger mt-1">{{ $t("settings.dataFolderError") }}</div>
+                    <div class="small text-muted mt-1">{{ $t("settings.dataFolderInfo") }}</div>
+                    <div v-if="dataFolder.error" class="small text-danger mt-1" :title="dataFolder.error">
+                      {{ $t("settings.dataFolderError") }}</div>
                   </div>
                   <div>
                     <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between align-items-center">
@@ -318,6 +324,43 @@
                 </select>
               </div>
             </div>
+            <div class="tab-pane fade" id="config-ai">
+              <div class="d-flex flex-column mt-2 h-100">
+                <div v-if="agents.list === null" class="text-muted">
+                  <span class="spinner-border spinner-border-sm me-2"></span>{{ $t("ai.detecting") }}
+                </div>
+                <template v-else-if="!agents.list.length">
+                  <p class="mb-2">{{ $t("ai.noAgents") }}</p>
+                  <ul>
+                    <li><a href="#" @click.prevent="openLink('https://claude.com/claude-code')">Claude Code</a></li>
+                    <li><a href="#" @click.prevent="openLink('https://developers.openai.com/codex/cli')">Codex CLI</a></li>
+                  </ul>
+                </template>
+                <template v-else>
+                  <label for="aiAgent" class="form-label">{{ $t("ai.assistant") }}:</label>
+                  <select id="aiAgent" class="form-select mb-1" :value="ai.agent" @change="saveAi({ agent: $event.target.value })">
+                    <option v-for="a in agents.list" :key="a.id" :value="a.id">{{ a.name }}</option>
+                  </select>
+                  <small class="text-muted mb-3">{{ aiAgent.version }}</small>
+                  <label for="aiModel" class="form-label">{{ $t("ai.model") }}:</label>
+                  <select id="aiModel" class="form-select mb-3" :value="ai.models[ai.agent] ?? ''"
+                    @change="saveAi({ models: { ...ai.models, [ai.agent]: $event.target.value } })">
+                    <option value="">{{ $t("ai.defaultModel") }}</option>
+                    <option v-for="m in aiAgent.models" :key="m.id" :value="m.id">{{ m.label }}</option>
+                  </select>
+                  <label for="aiEffort" class="form-label">{{ $t("ai.effort") }}:</label>
+                  <select id="aiEffort" class="form-select mb-3" :value="ai.effort" @change="saveAi({ effort: $event.target.value })">
+                    <option value="">{{ $t("ai.defaultModel") }}</option>
+                    <option v-for="e in ['low', 'medium', 'high']" :key="e" :value="e">{{ $t(`ai.${e}`) }}</option>
+                  </select>
+                  <small class="text-muted">{{ $t("ai.settingsInfo") }}</small>
+                </template>
+                <button type="button" class="btn border py-1 px-2 mt-3 align-self-start" :disabled="agents.detecting"
+                  @click="detectAgents">
+                  <i class="icons bi-arrow-clockwise mx-1"></i>{{ $t("ai.detectAgain") }}
+                </button>
+              </div>
+            </div>
             <div class="tab-pane fade" id="config-region">
               <div class="d-flex flex-column mt-2 h-100">
                 <label for="calendarSystem" class="form-label">{{ $t("settings.calendarSystem") }}:</label>
@@ -351,7 +394,8 @@ import configList from "./configList";
 import notifications from "../helpers/notifications";
 import { Modal } from "bootstrap";
 import desktop from "../helpers/desktop";
-import dataFolder, { dataFolderState } from "../helpers/dataFolder";
+import dataStore, { dataStoreState } from "../repositories/dataStore";
+import { agentsState, aiSettings, saveAiSettings, detectAgents, ensureDetected } from "../helpers/agents";
 import languageHelper from "../helpers/languageHelper";
 import { languages } from "../assets/languages/languages.js";
 import { calendarSystems, calendarName, weekdayName } from "../helpers/dates";
@@ -367,10 +411,23 @@ export default {
       configData: this.$store.getters.config,
       languages,
       calendarSystems,
-      dataFolder: dataFolderState,
+      dataFolder: dataStoreState,
+      agents: agentsState,
     };
   },
   methods: {
+    saveAi: function (patch) {
+      saveAiSettings(this.$store, patch);
+    },
+    detectAgents: function () {
+      detectAgents(this.$store);
+    },
+    detectAgentsOnce: function () {
+      ensureDetected(this.$store);
+    },
+    openLink: function (url) {
+      desktop.openExternal(url);
+    },
     changeConfig: function (key, val) {
       this.$nextTick(function () {
         this.$store.commit("updateConfig", { val: val, key: key });
@@ -401,14 +458,14 @@ export default {
       exportTool.import(event);
     },
     chooseDataFolder: function () {
-      dataFolder.choose({
+      dataStore.chooseFolder({
         question: this.$t("settings.dataFolderHasData"),
         load: this.$t("settings.loadFolderData"),
         cancel: this.$t("ui.cancel"),
       });
     },
     resetDataFolder: function () {
-      dataFolder.reset();
+      dataStore.resetFolder();
     },
     isDesktop: function () {
       return desktop.isDesktop();
@@ -455,6 +512,12 @@ export default {
     },
   },
   computed: {
+    ai: function () {
+      return aiSettings(this.$store);
+    },
+    aiAgent: function () {
+      return this.agents.list?.find((a) => a.id === this.ai.agent) ?? { models: [], version: "" };
+    },
     configLinks: function () {
       return configList.configList(this);
     },

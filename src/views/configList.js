@@ -1,6 +1,8 @@
+import desktop from "../helpers/desktop";
+
 export default {
     configList(vue) {
-        return [
+        const list = [
             {
               name: vue.$t('settings.general'),
               ico: "bi-sliders",
@@ -43,6 +45,11 @@ export default {
               linktype: "tagId",
               link: "config-language-tab",
             },
-          ]
+          ];
+        // The AI assistant runs local CLIs, so desktop only
+        if (desktop.isDesktop()) {
+            list.push({ name: vue.$t('settings.ai'), ico: "bi-stars", linktype: "tagId", link: "config-ai-tab" });
+        }
+        return list;
     }
 }

@@ -1,4 +1,4 @@
-import dbRepository from "../../repositories/dbRepository";
+import toDoListRepository from "../../repositories/toDoListRepository";
 
 const state = {
   todoLists: {},
@@ -80,23 +80,8 @@ const mutations = {
 
 const actions = {
   loadTodoLists({ commit }, todoListId) {
-    return new Promise((resolve) => {
-      let db_req = dbRepository.open();
-      db_req.onsuccess = function (event) {
-        let db = event.target.result;
-        var get_req = dbRepository.get(db, "todo_lists", todoListId);
-        get_req.onsuccess = function (event) {
-          let todoList = event.target.result;
-          if (todoList) {
-            commit("loadTodoLists", { todoListId: todoListId, todoList: todoList });
-          } else {
-            commit("loadTodoLists", { todoListId: todoListId, todoList: [] });
-            dbRepository.add(db, "todo_lists", todoListId, []);
-          }
-          resolve();
-        };
-      };
-    });
+    commit("loadTodoLists", { todoListId, todoList: toDoListRepository.get(todoListId) ?? [] });
+    return Promise.resolve();
   },
 };
 

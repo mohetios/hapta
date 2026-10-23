@@ -1,4 +1,5 @@
-import dbRepository from "../../repositories/dbRepository";
+import repeatingEventRepository from "../../repositories/repeatingEventRepository";
+import repeatingEventByDateRepository from "../../repositories/repeatingEventByDateRepository";
 
 const state = {
   repeatingEventList: {},
@@ -34,51 +35,15 @@ const mutations = {
 
 const actions = {
   loadRepeatingEvent({ commit }, repeatingEventId) {
-    let db_req = dbRepository.open();
-
-    db_req.onsuccess = function (event) {
-      let db = event.target.result;
-      var get_req = dbRepository.get(db, "repeating_events", repeatingEventId);
-
-      get_req.onsuccess = function (event) {
-        let repeatingEvent = event.target.result;
-        commit("loadRepeatingEvent", repeatingEvent);
-      };
-    };
+    commit("loadRepeatingEvent", repeatingEventRepository.get(repeatingEventId));
   },
   loadAllRepeatingEvent({ commit }) {
-    return new Promise((resolve) => {
-      let db_req = dbRepository.open();
-      db_req.onsuccess = function (event) {
-        let db = event.target.result;
-        let get_req = dbRepository.selectAll(db, "repeating_events");
-        var repeatingEvents = {};
-        get_req.onsuccess = function () {
-          let cursor = get_req.result;
-          if (cursor) {
-            repeatingEvents[cursor.key] = cursor.value;
-            cursor.continue();
-          } else {
-            commit("loadRepeatingEventList", repeatingEvents);
-            resolve();
-          }
-        };
-      };
-    });
+    commit("loadRepeatingEventList", repeatingEventRepository.all());
+    return Promise.resolve();
   },
   loadRepeatingEventGeneratedByDate({ commit }, date) {
-    return new Promise((resolve) => {
-      let db_req = dbRepository.open();
-      db_req.onsuccess = function (event) {
-        let db = event.target.result;
-        var get_req = dbRepository.get(db, "repeating_events_by_date", date);
-        get_req.onsuccess = function (event) {
-          let re_list = event.target.result;
-          commit("loadRepeatingEventGeneratedByDate", { key: date, val: re_list });
-          resolve();
-        };
-      };
-    });
+    commit("loadRepeatingEventGeneratedByDate", { key: date, val: repeatingEventByDateRepository.get(date) });
+    return Promise.resolve();
   },
 };
 

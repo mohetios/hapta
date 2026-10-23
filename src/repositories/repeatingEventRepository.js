@@ -1,18 +1,22 @@
-import dbRepository from "./dbRepository";
+import dataStore from "./dataStore";
+import { RECURRING, readRecurring } from "./plannerFiles";
 
 export default {
+  all() {
+    return readRecurring().events;
+  },
+  get(repeatingEventId) {
+    return readRecurring().events[repeatingEventId];
+  },
   update(repeatingEventId, repeatingEvent) {
-    let db_req = dbRepository.open();
-    db_req.onsuccess = function (event) {
-      let db = event.target.result;
-      dbRepository.update(db, "repeating_events", repeatingEventId, repeatingEvent);
-    };
+    const recurring = readRecurring();
+    recurring.events[repeatingEventId] = JSON.parse(JSON.stringify(repeatingEvent));
+    dataStore.write(RECURRING, recurring);
   },
   remove(repeatingEventId) {
-    let db_req = dbRepository.open();
-    db_req.onsuccess = function (event) {
-      let db = event.target.result;
-      dbRepository.delete(db, "repeating_events", repeatingEventId);
-    };
+    const recurring = readRecurring();
+    if (!(repeatingEventId in recurring.events)) return;
+    delete recurring.events[repeatingEventId];
+    dataStore.write(RECURRING, recurring);
   },
 };

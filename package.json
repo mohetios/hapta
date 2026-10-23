@@ -21,7 +21,7 @@
     "build": "vite build",
     "lint": "eslint src",
     "check:dates": "node src/helpers/dates.check.js",
-    "check:data": "node src/helpers/dataFolder.check.js",
+    "check:data": "node src/repositories/dataStore.check.js",
     "tauri": "tauri",
     "tauri:serve": "tauri dev",
     "tauri:build": "tauri build"

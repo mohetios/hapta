@@ -58,6 +58,7 @@
       </ul>
     </div>
 
+    <i v-if="isDesktop" class="bi-stars" data-bs-toggle="modal" data-bs-target="#aiModal" :title="$t('ai.title')"></i>
     <i class="bi-info-square" data-bs-toggle="modal" data-bs-target="#tipsModal" :title="$t('tips.tips')"></i>
     <i
       class="bi-gear"
@@ -74,6 +75,7 @@ import { todayId } from "../../helpers/dates";
 import customToDoListIdsRepository from "../../repositories/customToDoListIdsRepository";
 import toDoListRepository from "../../repositories/toDoListRepository";
 import datePicker from "../datePicker.vue";
+import desktop from "../../helpers/desktop";
 import languageHelper from "../../helpers/languageHelper.js";
 
 export default {
@@ -119,6 +121,10 @@ export default {
     },
     showCalendar: function () {
       return this.$store.getters.config.calendar;
+    },
+    // The AI assistant runs local CLIs, so desktop only
+    isDesktop: function () {
+      return desktop.isDesktop();
     },
     // Sidebar sits on the inline-start edge, so open toward the content
     pickerSide: function () {

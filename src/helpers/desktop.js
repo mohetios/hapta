@@ -35,9 +35,23 @@ export default {
   clearConfig() {
     return tauri().core.invoke("clear_config");
   },
-  getDataFolder() {
-    return tauri().core.invoke("get_data_folder");
+  // Planner data files, see src-tauri/src/data.rs
+  dataFolder() {
+    return tauri().core.invoke("data_folder");
   },
+  readDataFiles() {
+    return tauri().core.invoke("read_data_files");
+  },
+  writeDataFile(path, contents) {
+    return tauri().core.invoke("write_data_file", { path, contents });
+  },
+  deleteDataFile(path) {
+    return tauri().core.invoke("delete_data_file", { path });
+  },
+  onDataChanged(callback) {
+    return tauri().event.listen("data-changed", (e) => callback(e.payload.path, e.payload.contents));
+  },
+  // Resolves to the new path, or null if nothing changed.
   // labels: { question, load, cancel } for the "folder already has data" prompt
   chooseDataFolder(labels) {
     return tauri().core.invoke("choose_data_folder", { labels });
@@ -45,11 +59,19 @@ export default {
   resetDataFolder() {
     return tauri().core.invoke("reset_data_folder");
   },
-  readDataFile() {
-    return tauri().core.invoke("read_data_file");
+  // AI agent CLIs, see src-tauri/src/agents.rs
+  detectAgents() {
+    return tauri().core.invoke("detect_agents");
   },
-  writeDataFile(contents) {
-    return tauri().core.invoke("write_data_file", { contents });
+  // request: { agent, model, effort, system, prompt }; resolves to the agent's answer
+  runAgent(request) {
+    return tauri().core.invoke("run_agent", { request });
+  },
+  cancelAgent() {
+    return tauri().core.invoke("cancel_agent");
+  },
+  onAgentOutput(callback) {
+    return tauri().event.listen("agent-output", (e) => callback(e.payload));
   },
   onInitialChecks(callback) {
     return tauri().event.listen("initial-checks", callback);
