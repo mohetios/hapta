@@ -1,4 +1,5 @@
 import storageRepository from "./storageRepository";
+import dataFolder from "../helpers/dataFolder";
 
 export default {
     load() {
@@ -12,5 +13,6 @@ export default {
     },
     update(customToDoList) {
         storageRepository.set('customTodoListIds', customToDoList);
+        dataFolder.scheduleSave();
     }
 };

@@ -1,5 +1,5 @@
 import configRepository from "../repositories/configRepository";
-import { todayId, addDays } from "../helpers/dates";
+import { todayId } from "../helpers/dates";
 
 export default {
   migrate() {
@@ -13,6 +13,7 @@ export default {
     v2_1_0();
     v2_2_0();
     calendarSystems();
+    removeDonate();
   },
 };
 
@@ -50,8 +51,6 @@ function runInBackground() {
   if (!("runInBackground" in config)) {
     config["runInBackground"] = true;
     config["moveOldTasks"] = true;
-    config["dateToShowInitialDonateModal"] = addDays(todayId(), 15);
-    config["InitialDonateModalShown"] = false;
     configRepository.update(config);
   }
 }
@@ -102,6 +101,15 @@ function v2_2_0() {
   let config = configRepository.load();
   if (!("lastDayOpened" in config)) {
     config["lastDayOpened"] = todayId();
+    configRepository.update(config);
+  }
+}
+
+function removeDonate() {
+  let config = configRepository.load();
+  if ("InitialDonateModalShown" in config) {
+    delete config["dateToShowInitialDonateModal"];
+    delete config["InitialDonateModalShown"];
     configRepository.update(config);
   }
 }

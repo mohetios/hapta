@@ -2,21 +2,27 @@
 // the small set of commands the Vue app calls through src/helpers/desktop.js.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::fs;
+use std::io::ErrorKind;
+use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
 use tauri::{AppHandle, Emitter, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder, WindowEvent, Wry};
 use tauri_plugin_autostart::MacosLauncher;
+use tauri_plugin_dialog::{DialogExt, MessageDialogButtons, MessageDialogKind};
 use tauri_plugin_store::StoreExt;
 use tauri_plugin_window_state::{AppHandleExt, StateFlags};
 
 const TRAY_ICON: &[u8] = include_bytes!("../icons/tray.png");
 const TRAY_ICON_DARK: &[u8] = include_bytes!("../icons/tray-dark.png");
+// Task data mirrored into the folder chosen in Settings > Data (see src/helpers/dataFolder.js)
+const DATA_FILE: &str = "hapta-data.json";
 const HIDE_SPLASH_JS: &str = "if(document.getElementById('splashScreen')) document.getElementById('splashScreen').classList.add('hiddenSplashScreen');";
 
 // Visibility is decided by runInBackground, so the window state plugin must not touch it.
@@ -37,6 +43,13 @@ fn config_set(app: &AppHandle, key: &str, value: Value) {
     }
 }
 
+fn config_remove(app: &AppHandle, key: &str) {
+    if let Ok(store) = app.store("config.json") {
+        store.delete(key);
+        let _ = store.save();
+    }
+}
+
 fn config_bool(app: &AppHandle, key: &str) -> bool {
     config_get(app, key).and_then(|v| v.as_bool()).unwrap_or(false)
 }
@@ -45,6 +58,10 @@ fn config_str(app: &AppHandle, key: &str, default: &str) -> String {
     config_get(app, key)
         .and_then(|v| v.as_str().map(String::from))
         .unwrap_or_else(|| default.into())
+}
+
+fn data_folder(app: &AppHandle) -> Option<PathBuf> {
+    config_get(app, "dataFolder")?.as_str().map(PathBuf::from)
 }
 
 fn main_window(app: &AppHandle) -> Option<WebviewWindow> {
@@ -141,6 +158,20 @@ struct TrayLabels {
     quit: String,
 }
 
+#[derive(Deserialize)]
+struct DataFolderLabels {
+    question: String,
+    load: String,
+    cancel: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ChosenDataFolder {
+    path: String,
+    has_data: bool,
+}
+
 #[tauri::command]
 fn show_current_window(app: AppHandle) {
     show_window(&app);
@@ -159,6 +190,59 @@ fn set_run_in_background(app: AppHandle, run_in_background: bool) {
 #[tauri::command]
 fn clear_config(app: AppHandle) {
     config_set(&app, "runInBackground", json!(true));
+    config_remove(&app, "dataFolder");
+}
+
+#[tauri::command]
+fn get_data_folder(app: AppHandle) -> Option<String> {
+    data_folder(&app).map(|p| p.to_string_lossy().into_owned())
+}
+
+// The path never comes from the webview: it is picked here and stored on the Rust side.
+// async = runs off the main thread, which the blocking dialogs require.
+#[tauri::command]
+async fn choose_data_folder(app: AppHandle, labels: DataFolderLabels) -> Option<ChosenDataFolder> {
+    let dir = app.dialog().file().blocking_pick_folder()?.into_path().ok()?;
+    let has_data = dir.join(DATA_FILE).exists();
+    if has_data
+        && !app
+            .dialog()
+            .message(labels.question)
+            .title("Hapta")
+            .kind(MessageDialogKind::Warning)
+            .buttons(MessageDialogButtons::OkCancelCustom(labels.load, labels.cancel))
+            .blocking_show()
+    {
+        return None;
+    }
+    let path = dir.to_string_lossy().into_owned();
+    config_set(&app, "dataFolder", json!(path));
+    Some(ChosenDataFolder { path, has_data })
+}
+
+#[tauri::command]
+fn reset_data_folder(app: AppHandle) {
+    config_remove(&app, "dataFolder");
+}
+
+// None when no folder is set or the folder has no data file yet.
+#[tauri::command]
+fn read_data_file(app: AppHandle) -> Result<Option<String>, String> {
+    let Some(dir) = data_folder(&app) else { return Ok(None) };
+    match fs::read_to_string(dir.join(DATA_FILE)) {
+        Ok(contents) => Ok(Some(contents)),
+        Err(e) if e.kind() == ErrorKind::NotFound => Ok(None),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+// Write to a temp file and rename, so a crash never leaves a half-written data file.
+#[tauri::command]
+fn write_data_file(app: AppHandle, contents: String) -> Result<(), String> {
+    let dir = data_folder(&app).ok_or("no data folder set")?;
+    let tmp = dir.join(format!("{DATA_FILE}.tmp"));
+    fs::write(&tmp, contents).map_err(|e| e.to_string())?;
+    fs::rename(&tmp, dir.join(DATA_FILE)).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -194,11 +278,17 @@ fn main() {
         .plugin(tauri_plugin_autostart::init(MacosLauncher::LaunchAgent, None))
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             show_current_window,
             is_window_visible,
             set_run_in_background,
             clear_config,
+            get_data_folder,
+            choose_data_folder,
+            reset_data_folder,
+            read_data_file,
+            write_data_file,
             set_dark_tray_icon,
             set_tray_context_menu_label
         ])

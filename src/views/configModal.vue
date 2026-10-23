@@ -258,6 +258,24 @@
             <div class="tab-pane fade" id="config-data">
               <div class="d-flex flex-column mt-2 h-100">
                 <div>
+                  <div v-if="isDesktop()" class="px-1 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="form-check-label" for="data-folder-btn">{{ $t("settings.dataFolder") }}</label>
+                      <button id="data-folder-btn" type="button" class="btn py-1 px-2 border" style="width: 140px;"
+                        @click="chooseDataFolder">
+                        <i class="icons bi-folder2-open mx-2"></i>
+                        {{ $t("settings.choose") }}
+                      </button>
+                    </div>
+                    <div class="small text-muted mt-1">
+                      <template v-if="dataFolder.path">
+                        <bdi class="text-break">{{ dataFolder.path }}</bdi>
+                        <a href="#" class="ms-2" @click.prevent="resetDataFolder">{{ $t("settings.useDefaultFolder") }}</a>
+                      </template>
+                      <template v-else>{{ $t("settings.dataFolderDefault") }}</template>
+                    </div>
+                    <div v-if="dataFolder.error" class="small text-danger mt-1">{{ $t("settings.dataFolderError") }}</div>
+                  </div>
                   <div>
                     <div class="form-check form-switch d-flex px-1 mb-3 justify-content-between align-items-center">
                       <label class="form-check-label" for="export-data-btn">{{ $t("settings.exportData") }}</label>
@@ -333,6 +351,7 @@ import configList from "./configList";
 import notifications from "../helpers/notifications";
 import { Modal } from "bootstrap";
 import desktop from "../helpers/desktop";
+import dataFolder, { dataFolderState } from "../helpers/dataFolder";
 import languageHelper from "../helpers/languageHelper";
 import { languages } from "../assets/languages/languages.js";
 import { calendarSystems, calendarName, weekdayName } from "../helpers/dates";
@@ -348,6 +367,7 @@ export default {
       configData: this.$store.getters.config,
       languages,
       calendarSystems,
+      dataFolder: dataFolderState,
     };
   },
   methods: {
@@ -379,6 +399,16 @@ export default {
       let importingModal = new Modal(document.getElementById("importingModal"), { backdrop: "static" });
       importingModal.show();
       exportTool.import(event);
+    },
+    chooseDataFolder: function () {
+      dataFolder.choose({
+        question: this.$t("settings.dataFolderHasData"),
+        load: this.$t("settings.loadFolderData"),
+        cancel: this.$t("ui.cancel"),
+      });
+    },
+    resetDataFolder: function () {
+      dataFolder.reset();
     },
     isDesktop: function () {
       return desktop.isDesktop();

@@ -1,6 +1,6 @@
 import storageRepository from "./storageRepository";
 import { version } from "../../package.json";
-import { todayId, addDays } from "../helpers/dates";
+import { todayId } from "../helpers/dates";
 
 export default {
   load() {
@@ -25,8 +25,6 @@ export default {
         openOnStartup: true,
         runInBackground: true,
         moveOldTasks: true,
-        dateToShowInitialDonateModal: addDays(todayId(), 15),
-        InitialDonateModalShown: false,
         mainDividerPosition: 1,
         darkTrayIcon: false,
         importing: false,

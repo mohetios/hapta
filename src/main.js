@@ -1,6 +1,8 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import { store } from "./store/store";
+import dbRepository from "./repositories/dbRepository";
+import dataFolder from "./helpers/dataFolder";
 
 import { createI18n } from "vue-i18n";
 import { messages } from "./assets/languages/languages.js";
@@ -24,4 +26,9 @@ const app = createApp(App);
 
 app.use(store);
 app.use(i18n);
-app.mount("#app");
+// Data must be in place before App.vue loads it
+dbRepository
+  .migrateLegacyName()
+  .catch((e) => console.error("Database rename:", e))
+  .then(() => dataFolder.init())
+  .finally(() => app.mount("#app"));

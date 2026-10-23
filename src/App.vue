@@ -112,7 +112,6 @@
       <clear-data-modal></clear-data-modal>
       <clear-list-modal></clear-list-modal>
       <about-modal></about-modal>
-      <donate-modal></donate-modal>
       <welcome-modal></welcome-modal>
       <tips-modal></tips-modal>
       <to-do-modal :selectedTodo="selectedTodo"></to-do-modal>
@@ -142,8 +141,6 @@
         :sub-text="$t('ui.download')"
         @subTextClick="downloadNewVersion"
       ></toast-message>
-
-      <toast-message id="copiedAddress" :text="$t('donate.copiedAddres')"></toast-message>
     </div>
   </div>
   <div v-if="!compatible" class="compatible d-flex flex-column justify-content-center align-items-center p-5">
@@ -162,7 +159,6 @@ import configModal from "./views/configModal";
 import splashScreen from "./components/splashScreen";
 import configRepository from "./repositories/configRepository";
 import aboutModal from "./views/aboutModal";
-import donateModal from "./views/donateModal";
 import welcomeModal from "./views/welcomeModal";
 import toDoModal from "./views/toDoModal/toDoModal";
 import tipsModal from "./views/tipsModal";
@@ -187,7 +183,6 @@ import languageHelper from "./helpers/languageHelper";
 export default {
   name: "App",
   components: {
-    donateModal,
     configModal,
     toDoList,
     sideBar,
@@ -244,11 +239,16 @@ export default {
     this.weekResetScroll();
     this.calendarHeight = this.$store.getters.config.calendarHeight;
     window.addEventListener("resize", this.weekResetScroll);
-    document.onreadystatechange = () => {
-      if (document.readyState == "complete") {
-        setTimeout(this.hideSplash, 4500);
-      }
-    };
+    // main.js mounts after async startup work, so the page may already be loaded
+    if (document.readyState == "complete") {
+      setTimeout(this.hideSplash, 4500);
+    } else {
+      document.onreadystatechange = () => {
+        if (document.readyState == "complete") {
+          setTimeout(this.hideSplash, 4500);
+        }
+      };
+    }
 
     if (desktop.isDesktop()) {
       if (this.$store.getters.config.firstTimeOpen) desktop.showCurrentWindow();

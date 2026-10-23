@@ -3,6 +3,8 @@
 [![Build](https://github.com/mohetios/hapta/actions/workflows/release.yml/badge.svg)](https://github.com/mohetios/hapta/actions/workflows/release.yml)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 
+Website: https://hapta.mohetios.ir
+
 **Hapta** is a minimalist, privacy-focused weekly planner for Persian speakers, built on top of [WeekToDo](https://github.com/manuelernestog/weektodo).
 The goal: first-class **Jalali (Solar Hijri) calendar**, proper **RTL / Persian** UI, and a set of custom tweaks.
 
@@ -74,7 +76,6 @@ pnpm tauri:build      # package the desktop app
 ## Credits
 
 Hapta is a fork of [WeekToDo](https://github.com/manuelernestog/weektodo) by [Manuel Ernesto Garcia](https://manuelernestogr.bio.link/) and its contributors.
-If you'd like to support the original project: https://weektodo.me/support-us
 
 ## License
 

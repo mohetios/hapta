@@ -5,7 +5,7 @@ pkgver=2.2.0.r202610181721
 pkgrel=1
 pkgdesc="Minimalist weekly planner with Jalali (Persian) and other calendar systems and RTL support (prebuilt)"
 arch=('x86_64')
-url="https://github.com/mohetios/hapta"
+url="https://hapta.mohetios.ir"
 license=('GPL-3.0-only')
 depends=(
   'cairo'

@@ -63,7 +63,7 @@
               <li>
                 <button class="dropdown-item" type="button" @click="copyTodo">
                   <i class="bi-clipboard"></i>
-                  <span>{{ $t("donate.copy") }}</span>
+                  <span>{{ $t("ui.copy") }}</span>
                 </button>
               </li>
               <li>

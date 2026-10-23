@@ -16,7 +16,7 @@
     import desktop from "../helpers/desktop";
 
     export default {
-        name: "donateModal",
+        name: "linkList",
         data() {
             return {
             }

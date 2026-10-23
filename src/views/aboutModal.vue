@@ -34,6 +34,9 @@
               </a>
             </span>
             <div class="d-flex align-self-center mt-3">
+              <a href="https://hapta.mohetios.ir" target="_blank" :title="$t('about.site')">
+                <i class="bi-globe mx-2"></i
+              ></a>
               <a href="https://github.com/mohetios/hapta" target="_blank" :title="$t('about.sourceCode')">
                 <i class="bi-github mx-2"></i
               ></a>

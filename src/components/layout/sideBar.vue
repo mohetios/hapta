@@ -22,8 +22,6 @@
     <date-picker v-if="showCalendar" :side="pickerSide" @update:model-value="$emit('changeDate', $event)">
       <i class="bi-calendar-event" :title="$t('ui.calendar')"></i>
     </date-picker>
-    <!-- <i class="bi-search" :title="$t('donate.supportUs')"></i>
-    <i class="bi-filter" :title="$t('donate.supportUs')" ></i> -->
     <i
       v-if="showCalendar"
       class="bi-arrow-repeat"

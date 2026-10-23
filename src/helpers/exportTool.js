@@ -3,6 +3,7 @@ import dbRepository from "../repositories/dbRepository";
 import { Toast, Modal } from "bootstrap";
 import migrations from "../migrations/migrations";
 import desktop from "./desktop";
+import dataFolder from "./dataFolder";
 
 export default {
   export() {
@@ -45,9 +46,9 @@ export default {
     };
   },
   clear() {
-    if (desktop.isDesktop()) {
-      desktop.clearConfig();
-    }
+    // The folder's file is kept; clear_config forgets the folder so it isn't loaded back
+    dataFolder.stop();
+    const configCleared = desktop.isDesktop() ? desktop.clearConfig() : Promise.resolve();
 
     storageRepository.clean();
     let db_req = dbRepository.open();
@@ -59,7 +60,7 @@ export default {
         request2.onsuccess = function () {
           let request3 = dbRepository.clear(db, "repeating_events_by_date");
           request3.onsuccess = function () {
-            location.reload();
+            configCleared.finally(() => location.reload());
           };
         };
       };
@@ -145,6 +146,11 @@ function importIndexedDbData(a_data, table) {
   };
 }
 
+// Write the imported data to the data folder first, or startup would load the old file over it
+function finishImport() {
+  dataFolder.flush().then(() => location.reload());
+}
+
 function importDbRecords(db, data_a, table) {
   var keys, data;
 
@@ -152,7 +158,7 @@ function importDbRecords(db, data_a, table) {
     keys = Object.keys(data_a.todoLists);
     data = data_a.todoLists;
   } else if (table == "repeating_events") {
-    if (!('repeating_events' in data_a)) location.reload(); // if not exist is an old data, finish the import and reload
+    if (!('repeating_events' in data_a)) return finishImport(); // if not exist is an old data, finish the import and reload
     keys = Object.keys(data_a.repeating_events);
     data = data_a.repeating_events;
   } else {
@@ -169,7 +175,7 @@ function importDbRecords(db, data_a, table) {
     } else if (table == "repeating_events") {
       importIndexedDbData(data_a, "repeating_events_by_date");
     } else {
-      location.reload();
+      finishImport();
     }
   } else {
     while (i--) {
@@ -181,7 +187,7 @@ function importDbRecords(db, data_a, table) {
       } else if (table == "repeating_events") {
         importIndexedDbData(data_a, "repeating_events_by_date");
       } else {
-        location.reload();
+        finishImport();
       }
     };
   }

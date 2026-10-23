@@ -35,6 +35,22 @@ export default {
   clearConfig() {
     return tauri().core.invoke("clear_config");
   },
+  getDataFolder() {
+    return tauri().core.invoke("get_data_folder");
+  },
+  // labels: { question, load, cancel } for the "folder already has data" prompt
+  chooseDataFolder(labels) {
+    return tauri().core.invoke("choose_data_folder", { labels });
+  },
+  resetDataFolder() {
+    return tauri().core.invoke("reset_data_folder");
+  },
+  readDataFile() {
+    return tauri().core.invoke("read_data_file");
+  },
+  writeDataFile(contents) {
+    return tauri().core.invoke("write_data_file", { contents });
+  },
   onInitialChecks(callback) {
     return tauri().event.listen("initial-checks", callback);
   },
