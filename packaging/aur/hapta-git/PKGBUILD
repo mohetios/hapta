@@ -1,0 +1,62 @@
+# Maintainer: Ali Zemani <mehot1 at gmail dot com>
+# Builds from the local checkout this file lives in (no remote fetch).
+# Usage: cd packaging/aur/hapta-git && makepkg -si
+pkgname=hapta-git
+_pkgname=hapta
+pkgver=2.2.0.r940.g18ca601
+pkgrel=1
+pkgdesc="Minimalist weekly planner with Jalali (Persian) and other calendar systems and RTL support (built from local git)"
+arch=('x86_64')
+url="https://hapta.mohetios.ir"
+license=('GPL-3.0-only')
+depends=(
+  'cairo'
+  'dbus'
+  'gcc-libs'
+  'gdk-pixbuf2'
+  'glib2'
+  'glibc'
+  'gtk3'
+  'hicolor-icon-theme'
+  'libayatana-appindicator'
+  'libsoup3'
+  'webkit2gtk-4.1'
+)
+makedepends=('git' 'rust' 'nodejs' 'pnpm')
+provides=("${_pkgname}")
+conflicts=("${_pkgname}" 'hapta-bin')
+options=('!strip' '!debug')
+
+# repo root = three levels up from this PKGBUILD
+_repo="$(cd "${startdir}/../../.." && pwd)"
+
+pkgver() {
+  cd "${_repo}"
+  printf '%s.r%s.g%s' "$(node -p "require('./package.json').version")" \
+    "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "${_repo}"
+  pnpm install --frozen-lockfile
+  pnpm tauri build --no-bundle
+}
+
+package() {
+  cd "${_repo}"
+  install -Dm755 src-tauri/target/release/hapta "${pkgdir}/usr/bin/hapta"
+  install -Dm644 src-tauri/icons/32x32.png "${pkgdir}/usr/share/icons/hicolor/32x32/apps/hapta.png"
+  install -Dm644 src-tauri/icons/128x128.png "${pkgdir}/usr/share/icons/hicolor/128x128/apps/hapta.png"
+  install -Dm644 src-tauri/icons/128x128@2x.png "${pkgdir}/usr/share/icons/hicolor/256x256/apps/hapta.png"
+  install -Dm644 /dev/stdin "${pkgdir}/usr/share/applications/Hapta.desktop" <<DESKTOP
+[Desktop Entry]
+Categories=Utility;
+Comment=Minimalist weekly planner
+Exec=hapta
+StartupWMClass=hapta
+Icon=hapta
+Name=Hapta
+Terminal=false
+Type=Application
+DESKTOP
+}
